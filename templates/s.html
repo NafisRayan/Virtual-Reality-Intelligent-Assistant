@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transparent THREE.js with Camera Background</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/loaders/FontLoader.js"></script>
+    
+</head>
+<body class="m-0 p-0 overflow-hidden">
+    <!-- <div class="fixed top-0 left-0 w-full h-full z-[-1]">
+        <img id="video-background" class="min-w-full min-h-full w-auto h-auto object-cover" src="{{ url_for('video_feed') }}" alt="Video Feed" />
+    </div> -->
+    <div id="threejs-container" class="fixed top-0 left-0 w-full h-full"></div>
+
+    <div class="fixed top-0 left-0 w-full h-full z-[-1]">
+      <img id="video-background" class="min-w-full min-h-full w-auto h-auto object-cover" src="{{ url_for('video_feed') }}" alt="Video Feed" />
+  </div>
+  
+  <div class="absolute bottom-10 left-7 w-1/5 h-1/4 md:w-1/4 md:h-1/3 rounded-2xl shadow-2xl transform hover:scale-105 transition-transform duration-500 fade-in">
+      <iframe src="/assets/HTML/MapLibreGLJS.html" title="Map System" class="w-full h-full" id="mapIframe"></iframe>
+  </div>
+  
+  <div class="absolute bottom-10 right-7 w-1/5 h-1/2 md:w-1/4 md:h-1/2 rounded-2xl shadow-2xl transform hover:scale-105 transition-transform duration-500 fade-in">
+      <iframe src="/assets/HTML/ChatUI.html" title="Chat System" class="w-full h-full" id="chatIframe"></iframe>
+  </div>
+
+  
+
+  
+  <!-- Include Font Awesome for the icon -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  
+  
+    
+
+    <script type="module">
+        // Import the THREE.js library
+        import * as THREE from "https://cdn.skypack.dev/three@0.129.0/build/three.module.js";
+        // Import OrbitControls for camera movement
+        import { OrbitControls } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/controls/OrbitControls.js";
+        // Import GLTFLoader for loading .gltf models
+        import { GLTFLoader } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/loaders/GLTFLoader.js";
+        // Import the VRButton
+        import { VRButton } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/webxr/VRButton.js";
+        // Import XRHandModelFactory for XR hand controls
+        import { XRHandModelFactory } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/webxr/XRHandModelFactory.js";
+
+        // Create a new Three.js scene
+        const scene = new THREE.Scene();
+
+        // Set up a Perspective Camera with field of view, aspect ratio, and clipping planes
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 0, 0); // Set the camera's position
+
+        // Create a WebGL renderer with transparency enabled
+        const renderer = new THREE.WebGLRenderer({ 
+            alpha: true,
+            antialias: true
+        });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0x000000, 0); // Set clear color to transparent
+        document.getElementById('threejs-container').appendChild(renderer.domElement);
+
+        // Add the VR button to the document
+        document.body.appendChild(VRButton.createButton(renderer));
+
+        // Enable VR mode
+        renderer.xr.enabled = true;
+
+        // Instantiate OrbitControls for camera movement
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true; // Add smooth damping effect
+        controls.dampingFactor = 0.05;
+
+        // GLTF model folders
+        const modelsFolders = [
+
+          { folder: 'squid_game', scale: [.1, .1, .1], position: [23, -10, -20], rotation: [0, 5.5, 0], animation: false },
+          // { folder: 'metal_gear_rising_murasama', scale: [7, 7, 7], position: [22, -7, -20], rotation: [0, 10.2, 0], animation: false },
+          // { folder: 'flat', scale: [30, 30, 30], position: [0, 0, 500], rotation: [0, 0, 0], animation: false },
+
+        ];
+
+        let models = []; // Array to store loaded models
+ // { folder: 'flat', scale: [30, 30, 30], position: [0, 0, 500], rotation: [0, 0, 0], animation: false },
+        // Load multiple .gltf models using GLTFLoader
+        const loader = new GLTFLoader();
+        modelsFolders.forEach((modelData) => {
+          loader.load(
+            `assets/models/${modelData.folder}/scene.gltf`,
+            (gltf) => {
+              const model = gltf.scene;
+              model.rotation.set(...(modelData.rotation || [0, 0, 0]));
+              if (modelData.animation) {
+                model.mixer = new THREE.AnimationMixer(model);
+                model.mixer.clipAction(gltf.animations[0]).play();
+              }
+
+              // Set scale and position of each model
+              model.scale.set(...modelData.scale);
+              model.position.set(...modelData.position);
+
+              // Add the model to the scene and the array
+              scene.add(model);
+              models.push(model);
+            },
+            undefined,
+            (error) => {
+              console.error(`An error occurred while loading ${modelData.folder}:`, error);
+            }
+          );
+        });
+
+        // Terrain model loader
+        function loadSingleModel(folderName, scale = [1, 1, 1], position = [0, 0, 0], rotation = [0, 0, 0], animation = false) {
+          const loader = new GLTFLoader();
+          
+          return new Promise((resolve, reject) => {
+            loader.load(
+              `assets/models/${folderName}/scene.gltf`,
+              (gltf) => {
+                const model = gltf.scene;
+                
+                // Set rotation
+                model.rotation.set(...rotation);
+
+                // Set scale and position
+                model.scale.set(...scale);
+                model.position.set(...position);
+
+                // Handle animation if needed
+                if (animation) {
+                  model.mixer = new THREE.AnimationMixer(model);
+                  model.mixer.clipAction(gltf.animations[0]).play();
+                }
+
+                // Add the model to the scene
+                scene.add(model);
+                
+                models.push(model);
+                resolve(model);
+              },
+              undefined,
+              (error) => reject(error)
+            );
+          });
+        }
+
+        async function loadAndAnimateModel(folderName, scale, position, rotation, animation) {
+          try {
+            const model = await loadSingleModel(folderName, scale, position, rotation, animation);
+            console.log(`Model loaded successfully: ${folderName}`);
+          } catch (error) {
+            console.error(`Error loading model ${folderName}:`, error);
+          }
+        }
+
+        // Usage example
+        // loadAndAnimateModel('mars_surface_terrain_model', [50, 50, 50], [270,85,-500], [-.04, Math.PI, 0], false);
+
+
+        
+let ym = 3.5;
+
+// Create the centered horizontal lines
+const lineGeometry = new THREE.PlaneGeometry(16, 0.2);
+const lineMaterial = new THREE.MeshBasicMaterial({
+  color: 0x0077b6, // React blue color
+  opacity: 0.7, // 50% opacity
+  transparent: true // Enable transparency
+});
+
+// const line1 = new THREE.Mesh(lineGeometry, lineMaterial);
+// line1.position.set(0, 5-ym, -20); // Decreased z value
+// line1.rotation.set(0, 0, 0); // Set rotation to zero
+// scene.add(line1);
+
+// const line2 = new THREE.Mesh(lineGeometry, lineMaterial);
+// line2.position.set(0, 2-ym, -20); // Decreased z value
+// line2.rotation.set(0, 0, 0); // Set rotation to zero
+// scene.add(line2);
+
+// const line3 = new THREE.Mesh(lineGeometry, lineMaterial);
+// line3.position.set(0, -1-ym, -20); // Decreased z value
+// line3.rotation.set(0, 0, 0); // Set rotation to zero
+// scene.add(line3);
+
+
+let xp = 35
+let yp = 3
+
+// Create the status bar plane
+const NavBarGeometry = new THREE.PlaneGeometry(60, 5/3, 5);
+const NavBarMaterial = new THREE.MeshStandardMaterial({
+    color: 0xffffff,
+    metalness: 0.5,
+    roughness: 0.7,
+    transparent: true,
+    opacity: 0.3
+});
+const NavBar = new THREE.Mesh(NavBarGeometry, NavBarMaterial);
+// Remove fixed position - will be updated in animate loop
+scene.add(NavBar);
+
+// Load font
+const fontLoader = new THREE.FontLoader();
+let statusText; // Declare statusText globally
+fontLoader.load('assets/fonts/helvetiker_bold.typeface.json', (font) => {
+    // Get current date and time
+    const now = new Date();
+
+    // Format the combined string
+    const formattedString = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')} | ${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')} | Weather: Sunny, 29°C`;
+
+    // Create text geometry
+    const textGeometry = new THREE.TextGeometry(formattedString, {
+        font: font,
+        size: 1.8/3,
+        height: 0.1,
+        curveSegments: 12,
+        bevelEnabled: false,
+    });
+
+    // Create text material
+    const textMaterial = new THREE.MeshBasicMaterial({ color: 'black' });
+
+    // Create text mesh
+    statusText = new THREE.Mesh(textGeometry, textMaterial);
+    scene.add(statusText);
+});
+
+
+// Create the curved underline
+// const underlineGeometry = new THREE.TorusGeometry(10/2.5, 0.5/2.5, 16/2.5, 100/2.5);
+// const underlineMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+// const underline = new THREE.Mesh(underlineGeometry, underlineMaterial);
+// underline.position.set(-25, -8, -20); // Decreased z value
+// underline.rotation.set(0, 0, 0); // Set rotation to zero
+// scene.add(underline);
+
+
+
+
+
+// const iframe = document.createElement('iframe');
+// iframe.src = 'assets/HTML/map.html'; // Replace with your HTML file path
+// iframe.style.width = '25%';
+// iframe.style.height = '20%';
+
+// // Add the iframe to the document body
+// document.body.appendChild(iframe);
+
+
+
+
+
+
+
+
+        // Add ambient lighting to the scene
+        const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+        scene.add(ambientLight);
+
+        // Add a directional light for more lighting effects
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+        directionalLight.position.set(5, 5, 5); // Position the light
+        scene.add(directionalLight);
+
+        // Camera movement controls
+        const keys = {};
+        const moveSpeed = 1;
+        const moveVector = new THREE.Vector3();
+
+        window.addEventListener('keydown', (event) => {
+          keys[event.code] = true;
+        });
+
+        window.addEventListener('keyup', (event) => {
+          keys[event.code] = false;
+        });
+
+        function moveCamera() {
+          moveVector.set(0, 0, 0);
+
+          if (keys['ArrowUp'] || keys['KeyW']) moveVector.z -= moveSpeed;
+          if (keys['ArrowDown'] || keys['KeyS']) moveVector.z += moveSpeed;
+          if (keys['ArrowLeft'] || keys['KeyA']) moveVector.x -= moveSpeed;
+          if (keys['ArrowRight'] || keys['KeyD']) moveVector.x += moveSpeed;
+          if (keys['Space']) moveVector.y += moveSpeed;
+          if (keys['ShiftLeft']) moveVector.y -= moveSpeed;
+
+          // Apply rotation to movement vector
+          moveVector.applyQuaternion(camera.quaternion);
+
+          // Move the camera
+          camera.position.add(moveVector);
+
+          // Update OrbitControls target
+          controls.target.copy(camera.position).add(new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion));
+        }
+
+        // XR Hand Controls
+        const handModelFactory = new XRHandModelFactory();
+        let leftHand, rightHand;
+
+        function initXRHandControls() {
+          const controller1 = renderer.xr.getController(0);
+          scene.add(controller1);
+
+          const controller2 = renderer.xr.getController(1);
+          scene.add(controller2);
+
+          leftHand = renderer.xr.getHand(0);
+          leftHand.add(handModelFactory.createHandModel(leftHand, "mesh"));
+          scene.add(leftHand);
+
+          rightHand = renderer.xr.getHand(1);
+          rightHand.add(handModelFactory.createHandModel(rightHand, "mesh"));
+          scene.add(rightHand);
+        }
+
+        function animate() {
+          renderer.setAnimationLoop((timestamp, frame) => {
+            moveCamera();
+            controls.update();
+
+            const distance = 20; // Distance from camera
+            const heightOffset = 13; // Height offset for top position
+            const menuStartX = -28; // Start menu items from far left of status bar
+            const menuSpacing = 4; // Space between menu items
+
+            // Update NavBar position relative to camera
+            NavBar.position.copy(camera.position)
+                .add(new THREE.Vector3(0, heightOffset, -distance).applyQuaternion(camera.quaternion));
+            NavBar.quaternion.copy(camera.quaternion);
+
+            // Update status text position (right side)
+            if (statusText) {
+                statusText.position.copy(camera.position)
+                    .add(new THREE.Vector3(13, heightOffset - 0.43, -distance).applyQuaternion(camera.quaternion));
+                statusText.quaternion.copy(camera.quaternion);
+            }
+
+            // Update menu items positions (starting from far left)
+            menuButtons.forEach((button, index) => {
+                button.position.copy(camera.position)
+                    .add(new THREE.Vector3(menuStartX + (index * menuSpacing), heightOffset, -distance).applyQuaternion(camera.quaternion));
+                button.quaternion.copy(camera.quaternion);
+            });
+
+            // Update animations for each model
+            models.forEach((model) => {
+              if (model && model.mixer) {
+                model.mixer.update(0.016);
+              }
+            });
+
+            // Update hand models if in VR
+            if (renderer.xr.isPresenting) {
+              if (leftHand) {
+                if (typeof leftHand.update === 'function') {
+                  leftHand.update();
+                }
+              }
+              if (rightHand) {
+                if (typeof rightHand.update === 'function') {
+                  rightHand.update();
+                }
+              }
+            }
+
+            // Check for button interactions if in XR mode
+            if (renderer.xr.isPresenting) {
+              checkXRButtonIntersections();
+            }
+
+            renderer.render(scene, camera);
+          });
+        }
+
+        // Handle window resizing
+        window.addEventListener('resize', () => {
+          camera.aspect = window.innerWidth / window.innerHeight;
+          camera.updateProjectionMatrix();
+          renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Initialize XR Hand Controls
+        initXRHandControls();
+
+        const video = document.getElementById('video-background');
+        // video.style.pointerEvents = "none"; // Allow interaction with Three.js
+
+        animate(); // Start the animation loop
+
+        // Add these constants after creating the scene
+        const raycaster = new THREE.Raycaster();
+        const buttons = [];
+
+        // Add this function after the scene setup but before the animate loop
+        function createButton(text, position, onClick) {
+            const buttonGroup = new THREE.Group();
+            
+            // Create button background with status bar-matching style
+            const geometry = new THREE.PlaneGeometry(4, 5/3); // Adjusted height to match status bar
+            const material = new THREE.MeshStandardMaterial({
+                color: 0xffffff,
+                metalness: 0.5,
+                roughness: 0.7,
+                transparent: true,
+                opacity: 0.3  // Match status bar opacity
+            });
+            const buttonMesh = new THREE.Mesh(geometry, material);
+            
+            // Create text with matching style
+            const fontLoader = new THREE.FontLoader();
+            fontLoader.load('assets/fonts/helvetiker_bold.typeface.json', (font) => {
+                const textGeometry = new THREE.TextGeometry(text, {
+                    font: font,
+                    size: 1.8/3,  // Match status bar text size
+                    height: 0.1,
+                    curveSegments: 12,
+                    bevelEnabled: false,
+                });
+                const textMaterial = new THREE.MeshBasicMaterial({ color: 'black' });
+                const textMesh = new THREE.Mesh(textGeometry, textMaterial);
+                
+                // Center text on button
+                textGeometry.computeBoundingBox();
+                const textWidth = textGeometry.boundingBox.max.x - textGeometry.boundingBox.min.x;
+                textMesh.position.set(-textWidth/2, -0.2, 0.1);
+                
+                buttonGroup.add(textMesh);
+            });
+            
+            buttonGroup.add(buttonMesh);
+            buttonGroup.position.copy(position);
+            
+            buttonGroup.userData = {
+                isButton: true,
+                onClick: onClick,
+                originalColor: material.color.getHex(),
+                material: material
+            };
+            
+            buttons.push(buttonGroup);
+            scene.add(buttonGroup);
+            return buttonGroup;
+        }
+
+        // Add this near the top of your script, with other global declarations
+        const menuButtons = []; // Array to store menu buttons
+
+        // Create the menu items (positioned horizontally on status bar)
+        function createMenuItems() {
+            const buttons = [
+                createButton("Video", new THREE.Vector3(0, 0, 0), () => {
+                    const videoBackground = document.getElementById('video-background');
+                    videoBackground.style.display = (videoBackground.style.display === 'none') ? 'block' : 'none';
+                }),
+                createButton("Map", new THREE.Vector3(0, 0, 0), () => {
+                    const mapIframe = document.getElementById('mapIframe');
+                    mapIframe.style.display = (mapIframe.style.display === 'none') ? 'block' : 'none';
+                }),
+                createButton("Chat", new THREE.Vector3(0, 0, 0), () => {
+                    const chatIframe = document.getElementById('chatIframe');
+                    chatIframe.style.display = (chatIframe.style.display === 'none') ? 'block' : 'none';
+                })
+            ];
+            
+            // Make all buttons visible
+            buttons.forEach(button => {
+                button.visible = true;
+                menuButtons.push(button);
+            });
+            
+            return buttons;
+        }
+
+        // Create menu items immediately after declaration
+        const menuItems = createMenuItems();
+
+        // Remove menu button and toggle functionality since we don't need it anymore
+        let menuVisible = true; // Always visible now
+
+        // Modify the checkXRButtonIntersections function to handle all buttons
+        function checkXRButtonIntersections() {
+            if (!leftHand || !rightHand) return;
+            
+            const hands = [leftHand, rightHand];
+            hands.forEach(hand => {
+                const indexTip = hand.joints['index-finger-tip'];
+                if (!indexTip) return;
+                
+                const fingerDirection = new THREE.Vector3(0, 0, -1);
+                fingerDirection.applyQuaternion(indexTip.quaternion);
+                
+                raycaster.set(indexTip.position, fingerDirection);
+                
+                // Check intersections with visible buttons only
+                const visibleButtons = [...menuItems].filter(button => button.visible);
+                const intersects = raycaster.intersectObjects(
+                    visibleButtons.map(button => button.children[0]),
+                    true
+                );
+                
+                // Reset all visible buttons to original color
+                visibleButtons.forEach(button => {
+                    if (button.userData.material) {
+                        button.userData.material.color.setHex(button.userData.originalColor);
+                    }
+                });
+                
+                if (intersects.length > 0) {
+                    const button = intersects[0].object.parent;
+                    if (button.userData.isButton) {
+                        button.userData.material.color.setHex(0x64b5f6);
+                        
+                        if (intersects[0].distance < 0.1) {
+                            console.log('Button pressed!');
+                            button.userData.onClick();
+                            
+                            button.userData.isButton = false;
+                            setTimeout(() => {
+                                button.userData.isButton = true;
+                            }, 1000);
+                        }
+                    }
+                }
+            });
+        }
+
+        // Add mouse interaction capability
+        const mouse = new THREE.Vector2();
+        const mouseRaycaster = new THREE.Raycaster();
+
+        // Add event listeners for mouse interaction
+        window.addEventListener('mousemove', (event) => {
+            // Calculate mouse position in normalized device coordinates
+            // (-1 to +1) for both components
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            // Update the picking ray with the camera and mouse position
+            mouseRaycaster.setFromCamera(mouse, camera);
+
+            // Calculate objects intersecting the picking ray
+            const intersects = mouseRaycaster.intersectObjects(
+                buttons.map(button => button.children[0]),
+                true
+            );
+
+            // Reset all buttons to original color
+            buttons.forEach(button => {
+                if (button.userData.material) {
+                    button.userData.material.color.setHex(button.userData.originalColor);
+                }
+            });
+
+            // Highlight button on hover
+            if (intersects.length > 0) {
+                const button = intersects[0].object.parent;
+                if (button.userData.isButton) {
+                    button.userData.material.color.setHex(0x64b5f6);
+                }
+            }
+        });
+
+        window.addEventListener('click', (event) => {
+            // Update the picking ray with the camera and mouse position
+            mouseRaycaster.setFromCamera(mouse, camera);
+
+            // Calculate objects intersecting the picking ray
+            const intersects = mouseRaycaster.intersectObjects(
+                buttons.map(button => button.children[0]),
+                true
+            );
+
+            if (intersects.length > 0) {
+                const button = intersects[0].object.parent;
+                if (button.userData.isButton) {
+                    console.log('Button clicked!');
+                    button.userData.onClick();
+                    
+                    // Visual feedback for click
+                    button.userData.material.color.setHex(0x2196f3);
+                    setTimeout(() => {
+                        button.userData.material.color.setHex(button.userData.originalColor);
+                    }, 200);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

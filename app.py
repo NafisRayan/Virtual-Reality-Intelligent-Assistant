@@ -132,7 +132,7 @@ def index():
 def video_feed():
     return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
-@app.route('/Thesis/assets/<path:path>')
+@app.route('/assets/<path:path>')
 def serve_assets(path):
     if path.endswith('.ttf') or path.endswith('.otf'):
         return send_file(os.path.join('fonts', path), mimetype='application/font-ttf')

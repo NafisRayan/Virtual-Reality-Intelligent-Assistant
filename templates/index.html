@@ -26,6 +26,21 @@
 		<a href="https://threejs.org" target="_blank" rel="noopener" class="pointer-events-auto text-blue-400 hover:text-blue-300">three.js</a> vr - handinput - point and drag<br />
 		(Oculus Browser 15.1+)
 	</div>
+
+<script>
+const videoElement = document.getElementById('video-background');
+let isVideoVisible = true;
+
+const mapElement = document.getElementById('mapIframe');
+let isMapVisible = true;
+
+const chatElement = document.getElementById('chatIframe');
+let isChatVisible = true;
+
+// Removed HTML button event listeners
+</script>
+
+
 	
 	<script type="importmap">
 		{
@@ -308,26 +323,29 @@
 				this.camera = attributes.camera;
 				this.renderer = attributes.renderer;
 
-	}
+			}
 
-			execute( /*delta, time*/ ) {
-
-				this.queries.needCalibration.results.forEach( entity => {
-
-					if ( this.renderer.xr.getSession() ) {
-
-						const offset = entity.getComponent( OffsetFromCamera );
-						const object = entity.getComponent( Object3D ).object;
+			execute() {
+				this.queries.needCalibration.results.forEach(entity => {
+					const offset = entity.getComponent(OffsetFromCamera);
+					const object = entity.getComponent(Object3D).object;
+					
+					if (this.renderer.xr.isPresenting) {
 						const xrCamera = this.renderer.xr.getCamera();
 						object.position.x = xrCamera.position.x + offset.x;
 						object.position.y = xrCamera.position.y + offset.y;
 						object.position.z = xrCamera.position.z + offset.z;
-						entity.removeComponent( NeedCalibration );
-
+					} else {
+						object.position.x = this.camera.position.x + offset.x;
+						object.position.y = this.camera.position.y + offset.y;
+						object.position.z = this.camera.position.z + offset.z;
 					}
 
-				} );
-
+					// Only remove calibration for non-toggle buttons
+					if (!object.name.includes('toggle')) {
+						entity.removeComponent(NeedCalibration);
+					}
+				});
 			}
 
 		}
@@ -482,6 +500,9 @@
 			}
 		}
 
+		// Define a vertical offset variable
+		const verticalOffset = -0.1; // Adjust this value as needed
+
 		init();
 
 		function makeButtonMesh( x, y, z, color ) {
@@ -500,7 +521,7 @@
 
 			scene = new THREE.Scene();
 			
-			scene.background = null;
+			scene.background = isVideoVisible ? null : new THREE.Color(0x000000);
 			
 			camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 10 );
 			camera.position.set( 0, 1.2, 0.3 );
@@ -567,13 +588,27 @@
 			scene.add( hand2 );
 
 
+
+
+
+
+
+
+
+
+			
+
 			// setup objects in scene and entities
 			const floorGeometry = new THREE.PlaneGeometry( 4, 4 );
 			const floorMaterial = new THREE.MeshPhongMaterial( { color: 0x222222 } );
 			const floor = new THREE.Mesh( floorGeometry, floorMaterial );
 			floor.rotation.x = - Math.PI / 2;
 			floor.receiveShadow = true;
-			scene.add( floor );
+
+			
+			if (isVideoVisible) {
+				scene.add( floor );
+			}
 
 			const menuGeometry = new THREE.PlaneGeometry( 0.24, 0.5 );
 			const menuMaterial = new THREE.MeshPhongMaterial( {
@@ -581,7 +616,8 @@
 				transparent: true,
 			} );
 			const menuMesh = new THREE.Mesh( menuGeometry, menuMaterial );
-			menuMesh.position.set( 0.4, 1, - 1 );
+			menuMesh.name = 'menuPanel';
+			menuMesh.position.set(0.4, 1 + verticalOffset, -1);
 			menuMesh.rotation.y = - Math.PI / 12;
 			scene.add( menuMesh );
 
@@ -589,14 +625,14 @@
 			const resetButtonText = createText( 'reset', 0.06 );
 			resetButton.add( resetButtonText );
 			resetButtonText.position.set( 0, 0, 0.0051 );
-			resetButton.position.set( 0, - 0.06, 0 );
+			resetButton.position.set(0, -0.06 + verticalOffset, 0);
 			menuMesh.add( resetButton );
 
 			const exitButton = makeButtonMesh( 0.2, 0.1, 0.01, 0xff0000 );
 			const exitButtonText = createText( 'exit', 0.06 );
 			exitButton.add( exitButtonText );
 			exitButtonText.position.set( 0, 0, 0.0051 );
-			exitButton.position.set( 0, - 0.18, 0 );
+			exitButton.position.set(0, -0.18 + verticalOffset, 0);
 			menuMesh.add( exitButton );
 
 			const instructionText = createText( 'This is a WebXR Hands demo, please explore with hands.', 0.04 );
@@ -680,7 +716,7 @@
 			const hiButtonText = createText('hi', 0.06);
 			hiButton.add(hiButtonText);
 			hiButtonText.position.set(0, 0, 0.0051);
-			hiButton.position.set(0, 0.06, 0); // Position above reset button
+			hiButton.position.set(0, 0.06 + verticalOffset, 0);
 			menuMesh.add(hiButton);
 
 			const hiEntity = world.createEntity();
@@ -694,6 +730,106 @@
 				setTimeout(() => scene.remove(hiText), 2000); // Remove after 2 seconds
 			};
 			hiEntity.addComponent(Button, { action: hiAction });
+
+			// Create Video Toggle Button
+			const videoButton = makeButtonMesh(0.2, 0.1, 0.01, 0x4287f5); // Blue color
+			const videoButtonText = createText('Video', 0.06);
+			videoButton.add(videoButtonText);
+			videoButtonText.position.set(0, 0, 0.0051);
+			videoButton.position.set(0, 0.18 + verticalOffset, 0);
+			menuMesh.add(videoButton);
+
+			// Create Map Toggle Button
+			const mapButton = makeButtonMesh(0.2, 0.1, 0.01, 0x4287f5);
+			const mapButtonText = createText('Map', 0.06);
+			mapButton.add(mapButtonText);
+			mapButtonText.position.set(0, 0, 0.0051);
+			mapButton.position.set(0, 0.30 + verticalOffset, 0);
+			menuMesh.add(mapButton);
+
+			// Create Chat Toggle Button
+			const chatButton = makeButtonMesh(0.2, 0.1, 0.01, 0x4287f5);
+			const chatButtonText = createText('Chat', 0.06);
+			chatButton.add(chatButtonText);
+			chatButtonText.position.set(0, 0, 0.0051);
+			chatButton.position.set(0, 0.42 + verticalOffset, 0);
+			menuMesh.add(chatButton);
+
+			// Create button entities and actions
+			const videoEntity = world.createEntity();
+			videoEntity.addComponent(Intersectable);
+			videoEntity.addComponent(Object3D, { object: videoButton });
+			const videoAction = function () {
+				isVideoVisible = !isVideoVisible;
+				const videoElement = document.getElementById('video-background');
+				videoElement.style.display = isVideoVisible ? 'block' : 'none';
+				
+				scene.background = isVideoVisible ? null : new THREE.Color(0x000000);
+				videoButtonText.text = isVideoVisible ? 'Video' : 'Show Video';
+				videoButton.material.color.setHex(isVideoVisible ? 0x4287f5 : 0xff0000);
+			};
+			videoEntity.addComponent(Button, { action: videoAction });
+
+			const mapEntity = world.createEntity();
+			mapEntity.addComponent(Intersectable);
+			mapEntity.addComponent(Object3D, { object: mapButton });
+			const mapAction = function () {
+				isMapVisible = !isMapVisible;
+				const mapElement = document.getElementById('mapIframe');
+				mapElement.style.display = isMapVisible ? 'block' : 'none';
+				mapButtonText.text = isMapVisible ? 'Map' : 'Show Map';
+				mapButton.material.color.setHex(isMapVisible ? 0x4287f5 : 0xff0000);
+			};
+			mapEntity.addComponent(Button, { action: mapAction });
+
+			const chatEntity = world.createEntity();
+			chatEntity.addComponent(Intersectable);
+			chatEntity.addComponent(Object3D, { object: chatButton });
+			const chatAction = function () {
+				isChatVisible = !isChatVisible;
+				const chatElement = document.getElementById('chatIframe');
+				chatElement.style.display = isChatVisible ? 'block' : 'none';
+				chatButtonText.text = isChatVisible ? 'Chat' : 'Show Chat';
+				chatButton.material.color.setHex(isChatVisible ? 0x4287f5 : 0xff0000);
+			};
+			chatEntity.addComponent(Button, { action: chatAction });
+
+			// Add button userData
+			videoButton.userData = { isButton: true, action: videoAction };
+			mapButton.userData = { isButton: true, action: mapAction };
+			chatButton.userData = { isButton: true, action: chatAction };
+
+			// Add menu toggle button
+			const menuToggleButton = makeButtonMesh(0.07, 0.07, 0.01, 0x9932CC); // Purple color
+			const menuToggleText = createText('≡', 0.04); // Hamburger menu icon
+			menuToggleButton.add(menuToggleText);
+			menuToggleText.position.set(0, 0, 0.0051);
+			menuToggleButton.name = 'menuToggle';
+			
+			// Position relative to camera
+			menuToggleButton.position.set(-0.3, 0.3, -0.5); // Adjust these values to position as needed
+			scene.add(menuToggleButton);
+
+			let menuVisible = true;
+			const menuToggleEntity = world.createEntity();
+			menuToggleEntity.addComponent(Intersectable);
+			menuToggleEntity.addComponent(Object3D, { object: menuToggleButton });
+			menuToggleEntity.addComponent(OffsetFromCamera, { x: -0.3, y: 0.3, z: -0.5 });
+			menuToggleEntity.addComponent(NeedCalibration);
+			
+			const menuToggleAction = function () {
+				menuVisible = !menuVisible;
+				menuMesh.visible = menuVisible;
+				menuToggleText.text = menuVisible ? '≡' : '≣';
+				menuToggleButton.material.color.setHex(menuVisible ? 0x9932CC : 0xff0000);
+				
+				// Recalibrate menu position when showing
+				if (menuVisible) {
+					menuEntity.addComponent(NeedCalibration);
+				}
+			};
+			menuToggleEntity.addComponent(Button, { action: menuToggleAction });
+			menuToggleButton.userData = { isButton: true, action: menuToggleAction };
 
 			window.addEventListener( 'resize', onWindowResize );
 			window.addEventListener('keydown', handleKeyDown);
@@ -735,6 +871,27 @@
 
 			const delta = clock.getDelta();
 			const elapsedTime = clock.elapsedTime;
+
+			// Update menu toggle button position relative to camera
+			const menuToggleButton = scene.getObjectByName('menuToggle');
+			if (menuToggleButton) {
+				if (renderer.xr.isPresenting) {
+					const xrCamera = renderer.xr.getCamera();
+					menuToggleButton.position.x = xrCamera.position.x - 0.3 - 0.1;
+					menuToggleButton.position.y = xrCamera.position.y + 0.3 - 0.15;
+					menuToggleButton.position.z = xrCamera.position.z - 0.5;
+					
+					// Make button face the camera
+					menuToggleButton.quaternion.copy(xrCamera.quaternion);
+				} else {
+					menuToggleButton.position.x = camera.position.x - 0.3 - 0.1;
+					menuToggleButton.position.y = camera.position.y + 0.3 - 0.15;
+					menuToggleButton.position.z = camera.position.z - 0.5;
+					
+					// Make button face the camera
+					menuToggleButton.quaternion.copy(camera.quaternion);
+				}
+			}
 
 			if (!renderer.xr.isPresenting) {
 				if (keyStates['w']) {

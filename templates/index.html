@@ -22,55 +22,22 @@
 		<iframe src="/assets/HTML/ChatUI.html" title="Chat System" class="w-full h-full" id="chatIframe"></iframe>
 	</div>
 
-	<div class="absolute top-10 left-10">
-		<button id="toggle-video" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Toggle Video</button>
-		<button id="toggle-map" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Toggle Map</button>
-		<button id="toggle-chat" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Toggle Chat</button>
-	</div>
-
 	<div id="info" class="absolute top-0 w-full p-4 text-center text-white pointer-events-none">
 		<a href="https://threejs.org" target="_blank" rel="noopener" class="pointer-events-auto text-blue-400 hover:text-blue-300">three.js</a> vr - handinput - point and drag<br />
 		(Oculus Browser 15.1+)
 	</div>
 
-
-
 <script>
-const videoButton = document.getElementById('toggle-video');
 const videoElement = document.getElementById('video-background');
 let isVideoVisible = true;
 
-videoButton.addEventListener('click', () => {
-  isVideoVisible = !isVideoVisible;
-  videoElement.style.display = isVideoVisible ? 'block' : 'none';
-  videoButton.textContent = isVideoVisible ? 'Video' : 'Show Video';
-  videoButton.classList.toggle('bg-red-500', !isVideoVisible);
-  videoButton.classList.toggle('bg-blue-500', isVideoVisible);
-});
-
-const mapButton = document.getElementById('toggle-map');
 const mapElement = document.getElementById('mapIframe');
 let isMapVisible = true;
 
-mapButton.addEventListener('click', () => {
-  isMapVisible = !isMapVisible;
-  mapElement.style.display = isMapVisible ? 'block' : 'none';
-  mapButton.textContent = isMapVisible ? 'Map' : 'Show Map';
-  mapButton.classList.toggle('bg-red-500', !isMapVisible);
-  mapButton.classList.toggle('bg-blue-500', isMapVisible);
-});
-
-const chatButton = document.getElementById('toggle-chat');
 const chatElement = document.getElementById('chatIframe');
 let isChatVisible = true;
 
-chatButton.addEventListener('click', () => {
-  isChatVisible = !isChatVisible;
-  chatElement.style.display = isChatVisible ? 'block' : 'none';
-  chatButton.textContent = isChatVisible ? 'Chat' : 'Show Chat';
-  chatButton.classList.toggle('bg-red-500', !isChatVisible);
-  chatButton.classList.toggle('bg-blue-500', isChatVisible);
-});
+// Removed HTML button event listeners
 </script>
 
 

@@ -43,7 +43,7 @@ let isVideoVisible = true;
 videoButton.addEventListener('click', () => {
   isVideoVisible = !isVideoVisible;
   videoElement.style.display = isVideoVisible ? 'block' : 'none';
-  videoButton.textContent = isVideoVisible ? 'Hide Video' : 'Show Video';
+  videoButton.textContent = isVideoVisible ? 'Video' : 'Show Video';
   videoButton.classList.toggle('bg-red-500', !isVideoVisible);
   videoButton.classList.toggle('bg-blue-500', isVideoVisible);
 });
@@ -55,7 +55,7 @@ let isMapVisible = true;
 mapButton.addEventListener('click', () => {
   isMapVisible = !isMapVisible;
   mapElement.style.display = isMapVisible ? 'block' : 'none';
-  mapButton.textContent = isMapVisible ? 'Hide Map' : 'Show Map';
+  mapButton.textContent = isMapVisible ? 'Map' : 'Show Map';
   mapButton.classList.toggle('bg-red-500', !isMapVisible);
   mapButton.classList.toggle('bg-blue-500', isMapVisible);
 });
@@ -67,7 +67,7 @@ let isChatVisible = true;
 chatButton.addEventListener('click', () => {
   isChatVisible = !isChatVisible;
   chatElement.style.display = isChatVisible ? 'block' : 'none';
-  chatButton.textContent = isChatVisible ? 'Hide Chat' : 'Show Chat';
+  chatButton.textContent = isChatVisible ? 'Chat' : 'Show Chat';
   chatButton.classList.toggle('bg-red-500', !isChatVisible);
   chatButton.classList.toggle('bg-blue-500', isChatVisible);
 });
@@ -752,6 +752,75 @@ chatButton.addEventListener('click', () => {
 				setTimeout(() => scene.remove(hiText), 2000); // Remove after 2 seconds
 			};
 			hiEntity.addComponent(Button, { action: hiAction });
+
+			// Create Video Toggle Button
+			const videoButton = makeButtonMesh(0.2, 0.1, 0.01, 0x4287f5); // Blue color
+			const videoButtonText = createText('Video', 0.06);
+			videoButton.add(videoButtonText);
+			videoButtonText.position.set(0, 0, 0.0051);
+			videoButton.position.set(0, 0.18, 0); // Position above hi button
+			menuMesh.add(videoButton);
+
+			// Create Map Toggle Button
+			const mapButton = makeButtonMesh(0.2, 0.1, 0.01, 0x4287f5);
+			const mapButtonText = createText('Map', 0.06);
+			mapButton.add(mapButtonText);
+			mapButtonText.position.set(0, 0, 0.0051);
+			mapButton.position.set(0, 0.30, 0); // Position above video button
+			menuMesh.add(mapButton);
+
+			// Create Chat Toggle Button
+			const chatButton = makeButtonMesh(0.2, 0.1, 0.01, 0x4287f5);
+			const chatButtonText = createText('Chat', 0.06);
+			chatButton.add(chatButtonText);
+			chatButtonText.position.set(0, 0, 0.0051);
+			chatButton.position.set(0, 0.42, 0); // Position above map button
+			menuMesh.add(chatButton);
+
+			// Create button entities and actions
+			const videoEntity = world.createEntity();
+			videoEntity.addComponent(Intersectable);
+			videoEntity.addComponent(Object3D, { object: videoButton });
+			let isVideoVisible = true;
+			const videoAction = function () {
+				isVideoVisible = !isVideoVisible;
+				const videoElement = document.getElementById('video-background');
+				videoElement.style.display = isVideoVisible ? 'block' : 'none';
+				videoButtonText.text = isVideoVisible ? 'Video' : 'Show Video';
+				videoButton.material.color.setHex(isVideoVisible ? 0x4287f5 : 0xff0000);
+			};
+			videoEntity.addComponent(Button, { action: videoAction });
+
+			const mapEntity = world.createEntity();
+			mapEntity.addComponent(Intersectable);
+			mapEntity.addComponent(Object3D, { object: mapButton });
+			let isMapVisible = true;
+			const mapAction = function () {
+				isMapVisible = !isMapVisible;
+				const mapElement = document.getElementById('mapIframe');
+				mapElement.style.display = isMapVisible ? 'block' : 'none';
+				mapButtonText.text = isMapVisible ? 'Map' : 'Show Map';
+				mapButton.material.color.setHex(isMapVisible ? 0x4287f5 : 0xff0000);
+			};
+			mapEntity.addComponent(Button, { action: mapAction });
+
+			const chatEntity = world.createEntity();
+			chatEntity.addComponent(Intersectable);
+			chatEntity.addComponent(Object3D, { object: chatButton });
+			let isChatVisible = true;
+			const chatAction = function () {
+				isChatVisible = !isChatVisible;
+				const chatElement = document.getElementById('chatIframe');
+				chatElement.style.display = isChatVisible ? 'block' : 'none';
+				chatButtonText.text = isChatVisible ? 'Chat' : 'Show Chat';
+				chatButton.material.color.setHex(isChatVisible ? 0x4287f5 : 0xff0000);
+			};
+			chatEntity.addComponent(Button, { action: chatAction });
+
+			// Add button userData
+			videoButton.userData = { isButton: true, action: videoAction };
+			mapButton.userData = { isButton: true, action: mapAction };
+			chatButton.userData = { isButton: true, action: chatAction };
 
 			window.addEventListener( 'resize', onWindowResize );
 			window.addEventListener('keydown', handleKeyDown);

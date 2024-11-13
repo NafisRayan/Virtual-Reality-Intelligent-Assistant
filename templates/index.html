@@ -831,6 +831,82 @@ let isChatVisible = true;
 			menuToggleEntity.addComponent(Button, { action: menuToggleAction });
 			menuToggleButton.userData = { isButton: true, action: menuToggleAction };
 
+			// Add navbar container
+			const navbarGeometry = new THREE.BoxGeometry(0.8, 0.15, 0.01);
+			const navbarMaterial = new THREE.MeshPhongMaterial({
+				color: 0x333333,
+				opacity: 0.8,
+				transparent: true
+			});
+			const navbarMesh = new THREE.Mesh(navbarGeometry, navbarMaterial);
+			navbarMesh.name = 'navbar';
+			scene.add(navbarMesh);
+
+			// Create navbar buttons
+			const buttonWidth = 0.15;
+			const buttonSpacing = 0.17;
+			const buttonConfigs = [
+				{ icon: '🏠', name: 'home', color: 0x4CAF50 },
+				{ icon: '🗺️', name: 'map', color: 0x2196F3 },
+				{ icon: '💬', name: 'chat', color: 0x9C27B0 },
+				{ icon: '⚙️', name: 'settings', color: 0xFF9800 }
+			];
+
+			buttonConfigs.forEach((config, index) => {
+				const button = makeButtonMesh(buttonWidth, buttonWidth, 0.01, config.color);
+				const buttonText = createText(config.icon, 0.08);
+				button.add(buttonText);
+				buttonText.position.set(0, 0, 0.0051);
+
+				// Calculate position (centered in navbar)
+				const xPos = (index - (buttonConfigs.length - 1) / 2) * buttonSpacing;
+				button.position.set(xPos, 0, 0.0051);
+				navbarMesh.add(button);
+
+				// Create button entity
+				const buttonEntity = world.createEntity();
+				buttonEntity.addComponent(Intersectable);
+				buttonEntity.addComponent(Object3D, { object: button });
+				const buttonAction = function() {
+					switch(config.name) {
+						case 'home':
+							// Toggle video visibility
+							isVideoVisible = !isVideoVisible;
+							document.getElementById('video-background').style.display = 
+								isVideoVisible ? 'block' : 'none';
+							scene.background = isVideoVisible ? null : new THREE.Color(0x000000);
+							break;
+						case 'map':
+							// Toggle map visibility
+							isMapVisible = !isMapVisible;
+							document.getElementById('mapIframe').style.display = 
+								isMapVisible ? 'block' : 'none';
+							break;
+						case 'chat':
+							// Toggle chat visibility
+							isChatVisible = !isChatVisible;
+							document.getElementById('chatIframe').style.display = 
+								isChatVisible ? 'block' : 'none';
+							break;
+						case 'settings':
+							// Toggle menu visibility
+							menuMesh.visible = !menuMesh.visible;
+							break;
+					}
+					// Visual feedback
+					button.material.color.setHex(0x666666);
+					setTimeout(() => button.material.color.setHex(config.color), 200);
+				};
+				buttonEntity.addComponent(Button, { action: buttonAction });
+			});
+
+			// Add navbar entity with calibration
+			const navbarEntity = world.createEntity();
+			navbarEntity.addComponent(Intersectable);
+			navbarEntity.addComponent(Object3D, { object: navbarMesh });
+			navbarEntity.addComponent(OffsetFromCamera, { x: 0, y: -0.4, z: -0.7 });
+			navbarEntity.addComponent(NeedCalibration);
+
 			window.addEventListener( 'resize', onWindowResize );
 			window.addEventListener('keydown', handleKeyDown);
 			window.addEventListener('keyup', handleKeyUp);
@@ -890,6 +966,27 @@ let isChatVisible = true;
 					
 					// Make button face the camera
 					menuToggleButton.quaternion.copy(camera.quaternion);
+				}
+			}
+
+			// Update navbar position to follow camera
+			const navbar = scene.getObjectByName('navbar');
+			if (navbar) {
+				if (renderer.xr.isPresenting) {
+					const xrCamera = renderer.xr.getCamera();
+					navbar.position.x = xrCamera.position.x;
+					navbar.position.y = xrCamera.position.y - 0.4;
+					navbar.position.z = xrCamera.position.z - 0.7;
+					
+					// Make navbar face the camera
+					navbar.quaternion.copy(xrCamera.quaternion);
+				} else {
+					navbar.position.x = camera.position.x;
+					navbar.position.y = camera.position.y - 0.4;
+					navbar.position.z = camera.position.z - 0.7;
+					
+					// Make navbar face the camera
+					navbar.quaternion.copy(camera.quaternion);
 				}
 			}
 

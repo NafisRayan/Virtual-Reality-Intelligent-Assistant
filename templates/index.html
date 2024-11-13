@@ -323,26 +323,29 @@ let isChatVisible = true;
 				this.camera = attributes.camera;
 				this.renderer = attributes.renderer;
 
-	}
+			}
 
-			execute( /*delta, time*/ ) {
-
-				this.queries.needCalibration.results.forEach( entity => {
-
-					if ( this.renderer.xr.getSession() ) {
-
-						const offset = entity.getComponent( OffsetFromCamera );
-						const object = entity.getComponent( Object3D ).object;
+			execute() {
+				this.queries.needCalibration.results.forEach(entity => {
+					const offset = entity.getComponent(OffsetFromCamera);
+					const object = entity.getComponent(Object3D).object;
+					
+					if (this.renderer.xr.isPresenting) {
 						const xrCamera = this.renderer.xr.getCamera();
 						object.position.x = xrCamera.position.x + offset.x;
 						object.position.y = xrCamera.position.y + offset.y;
 						object.position.z = xrCamera.position.z + offset.z;
-						entity.removeComponent( NeedCalibration );
-
+					} else {
+						object.position.x = this.camera.position.x + offset.x;
+						object.position.y = this.camera.position.y + offset.y;
+						object.position.z = this.camera.position.z + offset.z;
 					}
 
-				} );
-
+					// Only remove calibration for non-toggle buttons
+					if (!object.name.includes('toggle')) {
+						entity.removeComponent(NeedCalibration);
+					}
+				});
 			}
 
 		}
@@ -610,6 +613,7 @@ let isChatVisible = true;
 				transparent: true,
 			} );
 			const menuMesh = new THREE.Mesh( menuGeometry, menuMaterial );
+			menuMesh.name = 'menuPanel';
 			menuMesh.position.set( 0.4, 1, - 1 );
 			menuMesh.rotation.y = - Math.PI / 12;
 			scene.add( menuMesh );
@@ -791,6 +795,38 @@ let isChatVisible = true;
 			videoButton.userData = { isButton: true, action: videoAction };
 			mapButton.userData = { isButton: true, action: mapAction };
 			chatButton.userData = { isButton: true, action: chatAction };
+
+			// Add menu toggle button
+			const menuToggleButton = makeButtonMesh(0.15, 0.15, 0.01, 0x9932CC); // Purple color
+			const menuToggleText = createText('≡', 0.08); // Hamburger menu icon
+			menuToggleButton.add(menuToggleText);
+			menuToggleText.position.set(0, 0, 0.0051);
+			menuToggleButton.name = 'menuToggle';
+			
+			// Position relative to camera
+			menuToggleButton.position.set(-0.3, 0.3, -0.5); // Adjust these values to position as needed
+			scene.add(menuToggleButton);
+
+			let menuVisible = true;
+			const menuToggleEntity = world.createEntity();
+			menuToggleEntity.addComponent(Intersectable);
+			menuToggleEntity.addComponent(Object3D, { object: menuToggleButton });
+			menuToggleEntity.addComponent(OffsetFromCamera, { x: -0.3, y: 0.3, z: -0.5 });
+			menuToggleEntity.addComponent(NeedCalibration);
+			
+			const menuToggleAction = function () {
+				menuVisible = !menuVisible;
+				menuMesh.visible = menuVisible;
+				menuToggleText.text = menuVisible ? '≡' : '≣';
+				menuToggleButton.material.color.setHex(menuVisible ? 0x9932CC : 0xff0000);
+				
+				// Recalibrate menu position when showing
+				if (menuVisible) {
+					menuEntity.addComponent(NeedCalibration);
+				}
+			};
+			menuToggleEntity.addComponent(Button, { action: menuToggleAction });
+			menuToggleButton.userData = { isButton: true, action: menuToggleAction };
 
 			window.addEventListener( 'resize', onWindowResize );
 			window.addEventListener('keydown', handleKeyDown);

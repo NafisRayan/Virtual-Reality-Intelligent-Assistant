@@ -500,6 +500,9 @@ let isChatVisible = true;
 			}
 		}
 
+		// Define a vertical offset variable
+		const verticalOffset = -0.1; // Adjust this value as needed
+
 		init();
 
 		function makeButtonMesh( x, y, z, color ) {
@@ -614,7 +617,7 @@ let isChatVisible = true;
 			} );
 			const menuMesh = new THREE.Mesh( menuGeometry, menuMaterial );
 			menuMesh.name = 'menuPanel';
-			menuMesh.position.set( 0.4, 1, - 1 );
+			menuMesh.position.set(0.4, 1 + verticalOffset, -1);
 			menuMesh.rotation.y = - Math.PI / 12;
 			scene.add( menuMesh );
 
@@ -622,14 +625,14 @@ let isChatVisible = true;
 			const resetButtonText = createText( 'reset', 0.06 );
 			resetButton.add( resetButtonText );
 			resetButtonText.position.set( 0, 0, 0.0051 );
-			resetButton.position.set( 0, - 0.06, 0 );
+			resetButton.position.set(0, -0.06 + verticalOffset, 0);
 			menuMesh.add( resetButton );
 
 			const exitButton = makeButtonMesh( 0.2, 0.1, 0.01, 0xff0000 );
 			const exitButtonText = createText( 'exit', 0.06 );
 			exitButton.add( exitButtonText );
 			exitButtonText.position.set( 0, 0, 0.0051 );
-			exitButton.position.set( 0, - 0.18, 0 );
+			exitButton.position.set(0, -0.18 + verticalOffset, 0);
 			menuMesh.add( exitButton );
 
 			const instructionText = createText( 'This is a WebXR Hands demo, please explore with hands.', 0.04 );
@@ -713,7 +716,7 @@ let isChatVisible = true;
 			const hiButtonText = createText('hi', 0.06);
 			hiButton.add(hiButtonText);
 			hiButtonText.position.set(0, 0, 0.0051);
-			hiButton.position.set(0, 0.06, 0); // Position above reset button
+			hiButton.position.set(0, 0.06 + verticalOffset, 0);
 			menuMesh.add(hiButton);
 
 			const hiEntity = world.createEntity();
@@ -733,7 +736,7 @@ let isChatVisible = true;
 			const videoButtonText = createText('Video', 0.06);
 			videoButton.add(videoButtonText);
 			videoButtonText.position.set(0, 0, 0.0051);
-			videoButton.position.set(0, 0.18, 0); // Position above hi button
+			videoButton.position.set(0, 0.18 + verticalOffset, 0);
 			menuMesh.add(videoButton);
 
 			// Create Map Toggle Button
@@ -741,7 +744,7 @@ let isChatVisible = true;
 			const mapButtonText = createText('Map', 0.06);
 			mapButton.add(mapButtonText);
 			mapButtonText.position.set(0, 0, 0.0051);
-			mapButton.position.set(0, 0.30, 0); // Position above video button
+			mapButton.position.set(0, 0.30 + verticalOffset, 0);
 			menuMesh.add(mapButton);
 
 			// Create Chat Toggle Button
@@ -749,7 +752,7 @@ let isChatVisible = true;
 			const chatButtonText = createText('Chat', 0.06);
 			chatButton.add(chatButtonText);
 			chatButtonText.position.set(0, 0, 0.0051);
-			chatButton.position.set(0, 0.42, 0); // Position above map button
+			chatButton.position.set(0, 0.42 + verticalOffset, 0);
 			menuMesh.add(chatButton);
 
 			// Create button entities and actions
@@ -797,8 +800,8 @@ let isChatVisible = true;
 			chatButton.userData = { isButton: true, action: chatAction };
 
 			// Add menu toggle button
-			const menuToggleButton = makeButtonMesh(0.15, 0.15, 0.01, 0x9932CC); // Purple color
-			const menuToggleText = createText('≡', 0.08); // Hamburger menu icon
+			const menuToggleButton = makeButtonMesh(0.07, 0.07, 0.01, 0x9932CC); // Purple color
+			const menuToggleText = createText('≡', 0.04); // Hamburger menu icon
 			menuToggleButton.add(menuToggleText);
 			menuToggleText.position.set(0, 0, 0.0051);
 			menuToggleButton.name = 'menuToggle';
@@ -874,15 +877,15 @@ let isChatVisible = true;
 			if (menuToggleButton) {
 				if (renderer.xr.isPresenting) {
 					const xrCamera = renderer.xr.getCamera();
-					menuToggleButton.position.x = xrCamera.position.x - 0.3;
-					menuToggleButton.position.y = xrCamera.position.y + 0.3;
+					menuToggleButton.position.x = xrCamera.position.x - 0.3 - 0.1;
+					menuToggleButton.position.y = xrCamera.position.y + 0.3 - 0.15;
 					menuToggleButton.position.z = xrCamera.position.z - 0.5;
 					
 					// Make button face the camera
 					menuToggleButton.quaternion.copy(xrCamera.quaternion);
 				} else {
-					menuToggleButton.position.x = camera.position.x - 0.3;
-					menuToggleButton.position.y = camera.position.y + 0.3;
+					menuToggleButton.position.x = camera.position.x - 0.3 - 0.1;
+					menuToggleButton.position.y = camera.position.y + 0.3 - 0.15;
 					menuToggleButton.position.z = camera.position.z - 0.5;
 					
 					// Make button face the camera

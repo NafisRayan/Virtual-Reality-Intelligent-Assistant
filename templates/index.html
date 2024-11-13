@@ -548,7 +548,7 @@ chatButton.addEventListener('click', () => {
 
 			scene = new THREE.Scene();
 			
-			scene.background = null;
+			scene.background = isVideoVisible ? null : new THREE.Color(0x000000);
 			
 			camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 10 );
 			camera.position.set( 0, 1.2, 0.3 );
@@ -631,7 +631,11 @@ chatButton.addEventListener('click', () => {
 			const floor = new THREE.Mesh( floorGeometry, floorMaterial );
 			floor.rotation.x = - Math.PI / 2;
 			floor.receiveShadow = true;
-			scene.add( floor );
+
+			
+			if (isVideoVisible) {
+				scene.add( floor );
+			}
 
 			const menuGeometry = new THREE.PlaneGeometry( 0.24, 0.5 );
 			const menuMaterial = new THREE.MeshPhongMaterial( {
@@ -781,11 +785,12 @@ chatButton.addEventListener('click', () => {
 			const videoEntity = world.createEntity();
 			videoEntity.addComponent(Intersectable);
 			videoEntity.addComponent(Object3D, { object: videoButton });
-			let isVideoVisible = true;
 			const videoAction = function () {
 				isVideoVisible = !isVideoVisible;
 				const videoElement = document.getElementById('video-background');
 				videoElement.style.display = isVideoVisible ? 'block' : 'none';
+				
+				scene.background = isVideoVisible ? null : new THREE.Color(0x000000);
 				videoButtonText.text = isVideoVisible ? 'Video' : 'Show Video';
 				videoButton.material.color.setHex(isVideoVisible ? 0x4287f5 : 0xff0000);
 			};
@@ -794,7 +799,6 @@ chatButton.addEventListener('click', () => {
 			const mapEntity = world.createEntity();
 			mapEntity.addComponent(Intersectable);
 			mapEntity.addComponent(Object3D, { object: mapButton });
-			let isMapVisible = true;
 			const mapAction = function () {
 				isMapVisible = !isMapVisible;
 				const mapElement = document.getElementById('mapIframe');
@@ -807,7 +811,6 @@ chatButton.addEventListener('click', () => {
 			const chatEntity = world.createEntity();
 			chatEntity.addComponent(Intersectable);
 			chatEntity.addComponent(Object3D, { object: chatButton });
-			let isChatVisible = true;
 			const chatAction = function () {
 				isChatVisible = !isChatVisible;
 				const chatElement = document.getElementById('chatIframe');

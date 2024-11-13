@@ -869,6 +869,27 @@ let isChatVisible = true;
 			const delta = clock.getDelta();
 			const elapsedTime = clock.elapsedTime;
 
+			// Update menu toggle button position relative to camera
+			const menuToggleButton = scene.getObjectByName('menuToggle');
+			if (menuToggleButton) {
+				if (renderer.xr.isPresenting) {
+					const xrCamera = renderer.xr.getCamera();
+					menuToggleButton.position.x = xrCamera.position.x - 0.3;
+					menuToggleButton.position.y = xrCamera.position.y + 0.3;
+					menuToggleButton.position.z = xrCamera.position.z - 0.5;
+					
+					// Make button face the camera
+					menuToggleButton.quaternion.copy(xrCamera.quaternion);
+				} else {
+					menuToggleButton.position.x = camera.position.x - 0.3;
+					menuToggleButton.position.y = camera.position.y + 0.3;
+					menuToggleButton.position.z = camera.position.z - 0.5;
+					
+					// Make button face the camera
+					menuToggleButton.quaternion.copy(camera.quaternion);
+				}
+			}
+
 			if (!renderer.xr.isPresenting) {
 				if (keyStates['w']) {
 					camera.position.x -= Math.sin(camera.rotation.y) * moveSpeed;

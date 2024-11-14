@@ -503,6 +503,9 @@ let isChatVisible = true;
 		// Define a vertical offset variable
 		const verticalOffset = -0.1; // Adjust this value as needed
 
+		// Define a global size factor for the navbar and buttons
+		const navbarSizeFactor = 0.5; // Adjust this value to scale the navbar and buttons
+
 		init();
 
 		function makeButtonMesh( x, y, z, color ) {
@@ -861,6 +864,41 @@ let isChatVisible = true;
 				}
 			});
 
+			// Create a navbar
+			const navbarGeometry = new THREE.PlaneGeometry(navbarSizeFactor, 0.1 * navbarSizeFactor);
+			const navbarMaterial = new THREE.MeshPhongMaterial({ color: 0x333333 });
+			const navbarMesh = new THREE.Mesh(navbarGeometry, navbarMaterial);
+			navbarMesh.name = 'navbar'; // Assign a name for easy reference
+			scene.add(navbarMesh);
+
+			// Adjust button sizes and positions, then add them to the navbar
+			cubeButton.scale.set(navbarSizeFactor, navbarSizeFactor, navbarSizeFactor);
+			cubeButton.position.set(-0.6 * navbarSizeFactor, 0, 0.01);
+			navbarMesh.add(cubeButton);
+
+			exitButton.scale.set(navbarSizeFactor, navbarSizeFactor, navbarSizeFactor);
+			exitButton.position.set(-0.3 * navbarSizeFactor, 0, 0.01);
+			navbarMesh.add(exitButton);
+
+			hiButton.scale.set(navbarSizeFactor, navbarSizeFactor, navbarSizeFactor);
+			hiButton.position.set(0, 0, 0.01);
+			navbarMesh.add(hiButton);
+
+			videoButton.scale.set(navbarSizeFactor, navbarSizeFactor, navbarSizeFactor);
+			videoButton.position.set(0.3 * navbarSizeFactor, 0, 0.01);
+			navbarMesh.add(videoButton);
+
+			mapButton.scale.set(navbarSizeFactor, navbarSizeFactor, navbarSizeFactor);
+			mapButton.position.set(0.6 * navbarSizeFactor, 0, 0.01);
+			navbarMesh.add(mapButton);
+
+			chatButton.scale.set(navbarSizeFactor, navbarSizeFactor, navbarSizeFactor);
+			chatButton.position.set(0.9 * navbarSizeFactor, 0, 0.01);
+			navbarMesh.add(chatButton);
+
+			// Remove menuMesh from the scene if not needed
+			scene.remove(menuMesh);
+
 		}
 
 		function onWindowResize() {
@@ -895,6 +933,27 @@ let isChatVisible = true;
 					
 					// Make button face the camera
 					menuToggleButton.quaternion.copy(camera.quaternion);
+				}
+			}
+
+			// Update navbar position relative to camera
+			const navbarMesh = scene.getObjectByName('navbar');
+			if (navbarMesh) {
+				if (renderer.xr.isPresenting) {
+					const xrCamera = renderer.xr.getCamera();
+					navbarMesh.position.set(
+						xrCamera.position.x - 0.3,
+						xrCamera.position.y + 0.3,
+						xrCamera.position.z - 0.5
+					);
+					navbarMesh.quaternion.copy(xrCamera.quaternion);
+				} else {
+					navbarMesh.position.set(
+						camera.position.x - 0.3,
+						camera.position.y + 0.3,
+						camera.position.z - 0.5
+					);
+					navbarMesh.quaternion.copy(camera.quaternion);
 				}
 			}
 

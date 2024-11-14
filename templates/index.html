@@ -508,7 +508,14 @@ let isChatVisible = true;
 		function makeButtonMesh( x, y, z, color ) {
 
 			const geometry = new THREE.BoxGeometry( x, y, z );
-			const material = new THREE.MeshPhongMaterial( { color: color } );
+			const material = new THREE.MeshPhongMaterial( { 
+				color: color,
+        transparent: true,
+        opacity: 0.5,
+        emissive: color,
+        emissiveIntensity: 0.5,
+        // shininess: 70
+			} );
 			const buttonMesh = new THREE.Mesh( geometry, material );
 			return buttonMesh;
 
@@ -610,9 +617,9 @@ let isChatVisible = true;
 				scene.add( floor );
 			}
 
-			const menuGeometry = new THREE.PlaneGeometry( 0.24, 0.5 );
+			const menuGeometry = new THREE.PlaneGeometry( 0.24, 0.77 );
 			const menuMaterial = new THREE.MeshPhongMaterial( {
-				opacity: 0,
+				opacity: 0.2,
 				transparent: true,
 			} );
 			const menuMesh = new THREE.Mesh( menuGeometry, menuMaterial );
@@ -623,6 +630,8 @@ let isChatVisible = true;
 
 			const cubeButton = makeButtonMesh( 0.2, 0.1, 0.01, 0x355c7d );
 			const cubeButtonText = createText( 'cube', 0.06 );
+			cubeButtonText.material.opacity = 1;
+			cubeButtonText.material.transparent = true;
 			cubeButton.add( cubeButtonText );
 			cubeButtonText.position.set( 0, 0, 0.0051 );
 			cubeButton.position.set(0, -0.06 + verticalOffset, 0);
@@ -630,16 +639,22 @@ let isChatVisible = true;
 
 			const exitButton = makeButtonMesh( 0.2, 0.1, 0.01, 0xff0000 );
 			const exitButtonText = createText( 'exit', 0.06 );
+			exitButtonText.material.opacity = 1;
+			exitButtonText.material.transparent = true;
 			exitButton.add( exitButtonText );
 			exitButtonText.position.set( 0, 0, 0.0051 );
 			exitButton.position.set(0, -0.18 + verticalOffset, 0);
 			menuMesh.add( exitButton );
 
 			const instructionText = createText( 'This is a WebXR Hands demo, please explore with hands.', 0.04 );
+			instructionText.material.opacity = 1;
+			instructionText.material.transparent = true;
 			instructionText.position.set( 0, 1.6, - 0.6 );
 			scene.add( instructionText );
 
 			const exitText = createText( 'Exiting session...', 0.04 );
+			exitText.material.opacity = 1;
+			exitText.material.transparent = true;
 			exitText.position.set( 0, 1.5, - 0.6 );
 			exitText.visible = false;
 			scene.add( exitText );
@@ -719,6 +734,8 @@ let isChatVisible = true;
 
 			const hiButton = makeButtonMesh(0.2, 0.1, 0.01, 0x4287f5); // Blue color
 			const hiButtonText = createText('hi', 0.06);
+			hiButtonText.material.opacity = 1;
+			hiButtonText.material.transparent = true;
 			hiButton.add(hiButtonText);
 			hiButtonText.position.set(0, 0, 0.0051);
 			hiButton.position.set(0, 0.06 + verticalOffset, 0);
@@ -739,6 +756,8 @@ let isChatVisible = true;
 			// Create Video Toggle Button
 			const videoButton = makeButtonMesh(0.2, 0.1, 0.01, 0x4CAF50); // Green color
 			const videoButtonText = createText('Video', 0.06);
+			videoButtonText.material.opacity = 1;
+			videoButtonText.material.transparent = true;
 			videoButton.add(videoButtonText);
 			videoButtonText.position.set(0, 0, 0.0051);
 			videoButton.position.set(0, 0.18 + verticalOffset, 0);
@@ -747,6 +766,8 @@ let isChatVisible = true;
 			// Create Map Toggle Button
 			const mapButton = makeButtonMesh(0.2, 0.1, 0.01, 0x4287f5);
 			const mapButtonText = createText('Map', 0.06);
+			mapButtonText.material.opacity = 1;
+			mapButtonText.material.transparent = true;
 			mapButton.add(mapButtonText);
 			mapButtonText.position.set(0, 0, 0.0051);
 			mapButton.position.set(0, 0.30 + verticalOffset, 0);
@@ -755,6 +776,8 @@ let isChatVisible = true;
 			// Create Chat Toggle Button
 			const chatButton = makeButtonMesh(0.2, 0.1, 0.01, 0x4CAF50); // Green color
 			const chatButtonText = createText('Chat', 0.06);
+			chatButtonText.material.opacity = 1;
+			chatButtonText.material.transparent = true;
 			chatButton.add(chatButtonText);
 			chatButtonText.position.set(0, 0, 0.0051);
 			chatButton.position.set(0, 0.42 + verticalOffset, 0);
@@ -807,6 +830,8 @@ let isChatVisible = true;
 			// Add menu toggle button
 			const menuToggleButton = makeButtonMesh(0.07, 0.07, 0.01, 0x9932CC); // Purple color
 			const menuToggleText = createText('≡', 0.04); // Hamburger menu icon
+			menuToggleText.material.opacity = 1;
+			menuToggleText.material.transparent = true;
 			menuToggleButton.add(menuToggleText);
 			menuToggleText.position.set(0, 0, 0.0051);
 			menuToggleButton.name = 'menuToggle';

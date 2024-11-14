@@ -29,7 +29,7 @@
 
 <script>
 const videoElement = document.getElementById('video-background');
-let isVideoVisible = true;
+let isVideoVisible = false;
 
 const mapElement = document.getElementById('mapIframe');
 let isMapVisible = true;
@@ -606,7 +606,7 @@ let isChatVisible = true;
 			floor.receiveShadow = true;
 
 			
-			if (isVideoVisible) {
+			if (isVideoVisible==false) {
 				scene.add( floor );
 			}
 
@@ -712,7 +712,7 @@ let isChatVisible = true;
 			itEntity.addComponent( HandsInstructionText );
 			itEntity.addComponent( Object3D, { object: instructionText } );
 
-			const hiButton = makeButtonMesh(0.2, 0.1, 0.01, 0x4CAF50); // Green color
+			const hiButton = makeButtonMesh(0.2, 0.1, 0.01, 0x4287f5); // Blue color
 			const hiButtonText = createText('hi', 0.06);
 			hiButton.add(hiButtonText);
 			hiButtonText.position.set(0, 0, 0.0051);
@@ -732,7 +732,7 @@ let isChatVisible = true;
 			hiEntity.addComponent(Button, { action: hiAction });
 
 			// Create Video Toggle Button
-			const videoButton = makeButtonMesh(0.2, 0.1, 0.01, 0x4287f5); // Blue color
+			const videoButton = makeButtonMesh(0.2, 0.1, 0.01, 0x4CAF50); // Green color
 			const videoButtonText = createText('Video', 0.06);
 			videoButton.add(videoButtonText);
 			videoButtonText.position.set(0, 0, 0.0051);
@@ -748,7 +748,7 @@ let isChatVisible = true;
 			menuMesh.add(mapButton);
 
 			// Create Chat Toggle Button
-			const chatButton = makeButtonMesh(0.2, 0.1, 0.01, 0x4287f5);
+			const chatButton = makeButtonMesh(0.2, 0.1, 0.01, 0x4CAF50); // Green color
 			const chatButtonText = createText('Chat', 0.06);
 			chatButton.add(chatButtonText);
 			chatButtonText.position.set(0, 0, 0.0051);

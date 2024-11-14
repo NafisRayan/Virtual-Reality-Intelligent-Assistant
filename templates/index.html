@@ -621,12 +621,12 @@ let isChatVisible = true;
 			menuMesh.rotation.y = - Math.PI / 12;
 			scene.add( menuMesh );
 
-			const resetButton = makeButtonMesh( 0.2, 0.1, 0.01, 0x355c7d );
-			const resetButtonText = createText( 'reset', 0.06 );
-			resetButton.add( resetButtonText );
-			resetButtonText.position.set( 0, 0, 0.0051 );
-			resetButton.position.set(0, -0.06 + verticalOffset, 0);
-			menuMesh.add( resetButton );
+			const cubeButton = makeButtonMesh( 0.2, 0.1, 0.01, 0x355c7d );
+			const cubeButtonText = createText( 'cube', 0.06 );
+			cubeButton.add( cubeButtonText );
+			cubeButtonText.position.set( 0, 0, 0.0051 );
+			cubeButton.position.set(0, -0.06 + verticalOffset, 0);
+			menuMesh.add( cubeButton );
 
 			const exitButton = makeButtonMesh( 0.2, 0.1, 0.01, 0xff0000 );
 			const exitButtonText = createText( 'exit', 0.06 );
@@ -662,18 +662,29 @@ let isChatVisible = true;
 				.registerSystem( DraggableSystem )
 				.registerSystem( HandRaySystem, { handPointers: [ handPointer1, handPointer2 ] } );
 
-			for ( let i = 0; i < 20; i ++ ) {
+			// Create an array to store cube entities
+			const cubeEntities = [];
 
-				const object = new THREE.Mesh( new THREE.BoxGeometry( 0.15, 0.15, 0.15 ), new THREE.MeshLambertMaterial( { color: 0xffffff } ) );
-				scene.add( object );
+			for (let i = 0; i < 20; i++) {
+				const object = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.15, 0.15), new THREE.MeshLambertMaterial({ color: 0xffffff }));
+				object.visible = false; // Initially hide the cubes
+				scene.add(object);
 
 				const entity = world.createEntity();
-				entity.addComponent( Intersectable );
-				entity.addComponent( Randomizable );
-				entity.addComponent( Object3D, { object: object } );
-				entity.addComponent( Draggable );
+				entity.addComponent(Intersectable);
+				entity.addComponent(Randomizable);
+				entity.addComponent(Object3D, { object: object });
+				entity.addComponent(Draggable);
 
+				cubeEntities.push(entity); // Store the entity
 			}
+
+			const rbAction = function () {
+				cubeEntities.forEach(entity => {
+					const object = entity.getComponent(Object3D).object;
+					object.visible = !object.visible; // Toggle visibility
+				});
+			};
 
 			const menuEntity = world.createEntity();
 			menuEntity.addComponent( Intersectable );
@@ -683,13 +694,7 @@ let isChatVisible = true;
 
 			const rbEntity = world.createEntity();
 			rbEntity.addComponent( Intersectable );
-			rbEntity.addComponent( Object3D, { object: resetButton } );
-			const rbAction = function () {
-
-				world.getSystem( RandomizerSystem ).needRandomizing = true;
-
-			};
-
+			rbEntity.addComponent( Object3D, { object: cubeButton } );
 			rbEntity.addComponent( Button, { action: rbAction } );
 
 			const ebEntity = world.createEntity();
@@ -845,7 +850,7 @@ let isChatVisible = true;
 			window.addEventListener('mousemove', onMouseDrag);
 
 			// Assign userData to objects
-			resetButton.userData = { isButton: true, action: rbAction };
+			cubeButton.userData = { isButton: true, action: rbAction };
 			exitButton.userData = { isButton: true, action: ebAction };
 			hiButton.userData = { isButton: true, action: hiAction };
 

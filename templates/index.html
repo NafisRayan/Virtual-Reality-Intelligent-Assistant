@@ -503,18 +503,17 @@ let isChatVisible = true;
 		// Define a vertical offset variable
 		const verticalOffset = -0.1; // Adjust this value as needed
 
-		// Define a global size factor for the navbar and buttons
-		const navbarSizeFactor = 0.5; // Adjust this value to scale the navbar and buttons
+		// Define a global size factor for the navbar, buttons, and button texts
+		const navbarSizeFactor = 0.5; // Adjust this value to scale the navbar, buttons, and texts
 
 		init();
 
-		function makeButtonMesh( x, y, z, color ) {
-
-			const geometry = new THREE.BoxGeometry( x, y, z );
-			const material = new THREE.MeshPhongMaterial( { color: color } );
-			const buttonMesh = new THREE.Mesh( geometry, material );
+		function makeButtonMesh(x, y, z, color) {
+			// Apply the size factor to the button dimensions
+			const geometry = new THREE.BoxGeometry(x * navbarSizeFactor, y * navbarSizeFactor, z * navbarSizeFactor);
+			const material = new THREE.MeshPhongMaterial({ color: color});
+			const buttonMesh = new THREE.Mesh(geometry, material);
 			return buttonMesh;
-
 		}
 
 		function init() {
@@ -871,28 +870,33 @@ let isChatVisible = true;
 			navbarMesh.name = 'navbar'; // Assign a name for easy reference
 			scene.add(navbarMesh);
 
-			// Adjust button sizes and positions, then add them to the navbar
-			cubeButton.scale.set(navbarSizeFactor, navbarSizeFactor, navbarSizeFactor);
+			// Function to scale button text
+			function scaleButtonText(text) {
+				text.scale.set(navbarSizeFactor, navbarSizeFactor, navbarSizeFactor);
+			}
+
+			// Adjust button sizes, text sizes, and positions, then add them to the navbar
+			scaleButtonText(cubeButtonText);
 			cubeButton.position.set(-0.6 * navbarSizeFactor, 0, 0.01);
 			navbarMesh.add(cubeButton);
 
-			exitButton.scale.set(navbarSizeFactor, navbarSizeFactor, navbarSizeFactor);
+			scaleButtonText(exitButtonText);
 			exitButton.position.set(-0.3 * navbarSizeFactor, 0, 0.01);
 			navbarMesh.add(exitButton);
 
-			hiButton.scale.set(navbarSizeFactor, navbarSizeFactor, navbarSizeFactor);
+			scaleButtonText(hiButtonText);
 			hiButton.position.set(0, 0, 0.01);
 			navbarMesh.add(hiButton);
 
-			videoButton.scale.set(navbarSizeFactor, navbarSizeFactor, navbarSizeFactor);
+			scaleButtonText(videoButtonText);
 			videoButton.position.set(0.3 * navbarSizeFactor, 0, 0.01);
 			navbarMesh.add(videoButton);
 
-			mapButton.scale.set(navbarSizeFactor, navbarSizeFactor, navbarSizeFactor);
+			scaleButtonText(mapButtonText);
 			mapButton.position.set(0.6 * navbarSizeFactor, 0, 0.01);
 			navbarMesh.add(mapButton);
 
-			chatButton.scale.set(navbarSizeFactor, navbarSizeFactor, navbarSizeFactor);
+			scaleButtonText(chatButtonText);
 			chatButton.position.set(0.9 * navbarSizeFactor, 0, 0.01);
 			navbarMesh.add(chatButton);
 

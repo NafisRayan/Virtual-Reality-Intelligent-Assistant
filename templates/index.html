@@ -23,59 +23,22 @@
 	</div>
 
 	<div id="info" class="absolute top-0 w-full p-4 text-center text-white pointer-events-none">
-		<!-- Futuristic Navbar -->
-		<div class="flex justify-between items-center px-6 py-3 bg-black bg-opacity-40 backdrop-blur-md rounded-xl border border-cyan-500/30 shadow-lg shadow-cyan-500/20">
-			<!-- Left Section -->
-			<div class="flex items-center space-x-4">
-				<div class="text-cyan-400 font-bold text-xl tracking-wider animate-pulse">
-					VR-SYSTEM
-				</div>
-				<div class="text-cyan-300/80 text-sm">
-					<span id="current-time">00:00:00</span>
-				</div>
-			</div>
-
-			<!-- Right Section -->
-			<div class="flex items-center space-x-4">
-				<div class="text-cyan-300/80 text-sm">
-					<span id="current-date">Loading...</span>
-				</div>
-				<div class="flex items-center space-x-2">
-					<div class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
-					<span class="text-cyan-300/80 text-sm">Connected</span>
-				</div>
-			</div>
-		</div>
+		<!-- navbar -->
+		<nav class="flex items-center justify-between bg-white bg-opacity-20 backdrop-blur-lg p-2 rounded-b-lg border border-gray-200">
+			<div class="text-lg font-bold">GameVR</div>
+			<div id="datetime" class="text-sm"></div>
+		</nav>
+		<script>
+			function updateDateTime() {
+				const now = new Date();
+				const time = now.toLocaleTimeString();
+				const date = now.toLocaleDateString();
+				document.getElementById('datetime').textContent = `${date} ${time}`;
+			}
+			setInterval(updateDateTime, 1000);
+			updateDateTime();
+		</script>
 	</div>
-
-	<style>
-		@keyframes typing {
-			from { width: 0 }
-			to { width: 100% }
-		}
-
-		.typing-animation {
-			overflow: hidden;
-			white-space: nowrap;
-			animation: typing 3s steps(40, end);
-		}
-
-		/* Glowing effect for interactive elements */
-		.border-cyan-500\/30:hover {
-			box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
-			transition: all 0.3s ease;
-		}
-
-		/* Smooth transitions */
-		.stat-item {
-			transition: all 0.3s ease;
-		}
-
-		.stat-item:hover {
-			transform: translateY(-2px);
-			color: rgb(34, 211, 238);
-		}
-	</style>
 
 <script>
 const videoElement = document.getElementById('video-background');
@@ -997,24 +960,6 @@ let isChatVisible = true;
 			renderer.render(scene, camera);
 
 		}
-
-		function updateDateTime() {
-			const now = new Date();
-			
-			// Update time (HH:MM:SS)
-			const time = now.toLocaleTimeString();
-			document.getElementById('current-time').textContent = time;
-			
-			// Update date (DD/MM/YYYY)
-			const date = now.toLocaleDateString();
-			document.getElementById('current-date').textContent = date;
-			
-			// Update every second
-			setTimeout(updateDateTime, 1000);
-		}
-
-		// Start updating date/time
-		updateDateTime();
 
 	</script>
 </body>

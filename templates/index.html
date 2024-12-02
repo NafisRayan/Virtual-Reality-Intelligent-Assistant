@@ -25,7 +25,7 @@
 	<div id="info" class="absolute top-0 w-full p-4 text-center text-white pointer-events-none">
 		<!-- navbar -->
 		<nav class="flex items-center justify-between bg-white bg-opacity-20 backdrop-blur-lg p-2 rounded-b-lg border border-gray-200">
-			<div class="text-lg font-bold">GameVR</div>
+			<div class="text-lg font-bold">Nafis Rayan</div>
 			<div id="datetime" class="text-sm"></div>
 		</nav>
 		<script>
@@ -72,6 +72,7 @@ let isChatVisible = true;
 		import { OculusHandModel } from 'three/addons/webxr/OculusHandModel.js';
 		import { OculusHandPointerModel } from 'three/addons/webxr/OculusHandPointerModel.js';
 		import { createText } from 'three/addons/webxr/Text2D.js';
+		import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 		import { World, System, Component, TagComponent, Types } from 'three/addons/libs/ecsy.module.js';
 
@@ -428,6 +429,7 @@ let isChatVisible = true;
 			'a': false,
 			'd': false
 		};
+		let models = []; // Add this line here with other global variables
 
 		function handleKeyDown(event) {
 			if (keyStates.hasOwnProperty(event.key.toLowerCase())) {
@@ -899,6 +901,45 @@ let isChatVisible = true;
 				}
 			});
 
+			// Add GLTFLoader import
+			const modelsFolders = [
+				{ 
+					// folder: 'squid_game',
+					// scale: [.01, .01, .01],  
+					folder: 'flat', 
+					scale: [.1, .1, .1], 
+					position: [0, 0, 0], 
+					rotation: [0, 0, 0], 
+					animation: false 
+				}
+			];
+
+			const loader = new GLTFLoader();
+			modelsFolders.forEach((modelData) => {
+				loader.load(
+					`assets/models/${modelData.folder}/scene.gltf`,
+					(gltf) => {
+						const model = gltf.scene;
+						model.rotation.set(...(modelData.rotation || [0, 0, 0]));
+						
+						if (modelData.animation) {
+							model.mixer = new THREE.AnimationMixer(model);
+							model.mixer.clipAction(gltf.animations[0]).play();
+						}
+
+						model.scale.set(...modelData.scale);
+						model.position.set(...modelData.position);
+
+						scene.add(model);
+						models.push(model);
+					},
+					undefined,
+					(error) => {
+						console.error(`An error occurred while loading ${modelData.folder}:`, error);
+					}
+				);
+			});
+
 		}
 
 		function onWindowResize() {
@@ -958,6 +999,13 @@ let isChatVisible = true;
 			renderer.xr.updateCamera(camera);
 			world.execute(delta, elapsedTime);
 			renderer.render(scene, camera);
+
+			// Update animations for each model
+			models.forEach((model) => {
+				if (model && model.mixer) {
+					model.mixer.update(0.016);
+				}
+			});
 
 		}
 

@@ -427,7 +427,9 @@ let isChatVisible = true;
 			'w': false,
 			's': false,
 			'a': false,
-			'd': false
+			'd': false,
+			'q': false,
+			'e': false
 		};
 		let models = []; // Add this line here with other global variables
 
@@ -993,6 +995,12 @@ let isChatVisible = true;
 				if (keyStates['d']) {
 					camera.position.x += Math.cos(camera.rotation.y) * moveSpeed;
 					camera.position.z -= Math.sin(camera.rotation.y) * moveSpeed;
+				}
+				if (keyStates['q']) {
+					camera.position.y += moveSpeed;
+				}
+				if (keyStates['e']) {
+					camera.position.y -= moveSpeed;
 				}
 			}
 

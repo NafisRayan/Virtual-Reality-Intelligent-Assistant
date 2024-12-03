@@ -750,7 +750,7 @@ let isChatVisible = true;
 			itEntity.addComponent( Object3D, { object: instructionText } );
 
 			const hiButton = makeButtonMesh(0.2, 0.1, 0.01, 0x4287f5); // Blue color
-			const hiButtonText = createText('hi', 0.06);
+			const hiButtonText = createText('Dive', 0.06);
 			hiButtonText.material.opacity = 1;
 			hiButtonText.material.transparent = true;
 			hiButton.add(hiButtonText);
@@ -762,11 +762,16 @@ let isChatVisible = true;
 			hiEntity.addComponent(Intersectable);
 			hiEntity.addComponent(Object3D, { object: hiButton });
 			const hiAction = function () {
-				console.log('Hi');
-				const hiText = createText('Hi', 0.2);
+				console.log('Dive');
+				const hiText = createText('Dive', 0.2);
 				hiText.position.set(0, 1.5, -1);
 				scene.add(hiText);
 				setTimeout(() => scene.remove(hiText), 2000); // Remove after 2 seconds
+
+				// Toggle visibility of GLTF models
+				models.forEach(model => {
+					model.visible = !model.visible;
+				});
 			};
 			hiEntity.addComponent(Button, { action: hiAction });
 

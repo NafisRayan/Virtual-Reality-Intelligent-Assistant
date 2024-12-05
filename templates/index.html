@@ -545,7 +545,7 @@ let isChatVisible = true;
 
 			scene = new THREE.Scene();
 			
-			scene.background = isVideoVisible ? null : new THREE.Color(0x000000);
+			scene.background = isVideoVisible ? null : new THREE.TextureLoader().load('/assets/sky_texture.jpg');
 			
 			camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 10 );
 			camera.position.set( 0, 1.2, 0.3 );
@@ -814,7 +814,7 @@ let isChatVisible = true;
 				const videoElement = document.getElementById('video-background');
 				videoElement.style.display = isVideoVisible ? 'block' : 'none';
 				
-				scene.background = isVideoVisible ? null : new THREE.Color(0x000000);
+				scene.background = isVideoVisible ? null : new THREE.TextureLoader().load('path/to/your/sky_texture.jpg');
 				videoButtonText.text = isVideoVisible ? 'Video' : 'Show Video';
 				videoButton.material.color.setHex(isVideoVisible ? 0x4287f5 : 0xff0000);
 			};

@@ -448,6 +448,8 @@ let isChatVisible = true;
 		let isMouseDown = false;
 		let previousMousePosition = { x: 0, y: 0 };
 		const mouseSensitivity = 0.002;
+		const rotationQuaternion = new THREE.Quaternion();
+		const rotationEuler = new THREE.Euler(0, 0, 0, 'YXZ');
 
 		function handleMouseDown(event) {
 			isMouseDown = true;
@@ -465,11 +467,19 @@ let isChatVisible = true;
 			const deltaX = event.clientX - previousMousePosition.x;
 			const deltaY = event.clientY - previousMousePosition.y;
 
-			camera.rotation.y -= deltaX * mouseSensitivity;
-			camera.rotation.x -= deltaY * mouseSensitivity;
+			// Update rotation euler
+			rotationEuler.setFromQuaternion(camera.quaternion);
+			
+			// Apply rotations
+			rotationEuler.y -= deltaX * mouseSensitivity;
+			rotationEuler.x = Math.max(
+				-Math.PI / 2.1, 
+				Math.min(Math.PI / 2.1, 
+				rotationEuler.x - deltaY * mouseSensitivity)
+			);
 
-			// Clamp the x rotation to prevent flipping
-			camera.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, camera.rotation.x));
+			// Convert back to quaternion
+			camera.quaternion.setFromEuler(rotationEuler);
 
 			previousMousePosition.x = event.clientX;
 			previousMousePosition.y = event.clientY;
@@ -985,22 +995,31 @@ let isChatVisible = true;
 				}
 			}
 
+			// Handle keyboard movement relative to camera direction
 			if (!renderer.xr.isPresenting) {
+				// Get forward and right vectors from camera's rotation
+				const forward = new THREE.Vector3(0, 0, -1);
+				const right = new THREE.Vector3(1, 0, 0);
+				forward.applyQuaternion(camera.quaternion);
+				right.applyQuaternion(camera.quaternion);
+
+				// Zero out y component to keep movement horizontal
+				forward.y = 0;
+				right.y = 0;
+				forward.normalize();
+				right.normalize();
+
 				if (keyStates['w']) {
-					camera.position.x -= Math.sin(camera.rotation.y) * moveSpeed;
-					camera.position.z -= Math.cos(camera.rotation.y) * moveSpeed;
+					camera.position.addScaledVector(forward, moveSpeed);
 				}
 				if (keyStates['s']) {
-					camera.position.x += Math.sin(camera.rotation.y) * moveSpeed;
-					camera.position.z += Math.cos(camera.rotation.y) * moveSpeed;
+					camera.position.addScaledVector(forward, -moveSpeed);
 				}
 				if (keyStates['a']) {
-					camera.position.x -= Math.cos(camera.rotation.y) * moveSpeed;
-					camera.position.z += Math.sin(camera.rotation.y) * moveSpeed;
+					camera.position.addScaledVector(right, -moveSpeed);
 				}
 				if (keyStates['d']) {
-					camera.position.x += Math.cos(camera.rotation.y) * moveSpeed;
-					camera.position.z -= Math.sin(camera.rotation.y) * moveSpeed;
+					camera.position.addScaledVector(right, moveSpeed);
 				}
 				if (keyStates['q']) {
 					camera.position.y += moveSpeed;

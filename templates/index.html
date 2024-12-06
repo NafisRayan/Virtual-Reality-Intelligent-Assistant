@@ -23,8 +23,21 @@
 	</div>
 
 	<div id="info" class="absolute top-0 w-full p-4 text-center text-white pointer-events-none">
-		<a href="https://threejs.org" target="_blank" rel="noopener" class="pointer-events-auto text-blue-400 hover:text-blue-300">three.js</a> vr - handinput - point and drag<br />
-		(Oculus Browser 15.1+)
+		<!-- navbar -->
+		<nav class="flex items-center justify-between bg-white bg-opacity-20 backdrop-blur-lg p-2 rounded-b-lg border border-gray-200">
+			<div class="text-lg font-bold">Nafis Rayan</div>
+			<div id="datetime" class="text-sm"></div>
+		</nav>
+		<script>
+			function updateDateTime() {
+				const now = new Date();
+				const time = now.toLocaleTimeString();
+				const date = now.toLocaleDateString();
+				document.getElementById('datetime').textContent = `${date} ${time}`;
+			}
+			setInterval(updateDateTime, 1000);
+			updateDateTime();
+		</script>
 	</div>
 
 <script>
@@ -59,6 +72,7 @@ let isChatVisible = true;
 		import { OculusHandModel } from 'three/addons/webxr/OculusHandModel.js';
 		import { OculusHandPointerModel } from 'three/addons/webxr/OculusHandPointerModel.js';
 		import { createText } from 'three/addons/webxr/Text2D.js';
+		import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 		import { World, System, Component, TagComponent, Types } from 'three/addons/libs/ecsy.module.js';
 
@@ -413,8 +427,11 @@ let isChatVisible = true;
 			'w': false,
 			's': false,
 			'a': false,
-			'd': false
+			'd': false,
+			'q': false,
+			'e': false
 		};
+		let models = []; // Add this line here with other global variables
 
 		function handleKeyDown(event) {
 			if (keyStates.hasOwnProperty(event.key.toLowerCase())) {
@@ -431,6 +448,8 @@ let isChatVisible = true;
 		let isMouseDown = false;
 		let previousMousePosition = { x: 0, y: 0 };
 		const mouseSensitivity = 0.002;
+		const rotationQuaternion = new THREE.Quaternion();
+		const rotationEuler = new THREE.Euler(0, 0, 0, 'YXZ');
 
 		function handleMouseDown(event) {
 			isMouseDown = true;
@@ -448,11 +467,19 @@ let isChatVisible = true;
 			const deltaX = event.clientX - previousMousePosition.x;
 			const deltaY = event.clientY - previousMousePosition.y;
 
-			camera.rotation.y -= deltaX * mouseSensitivity;
-			camera.rotation.x -= deltaY * mouseSensitivity;
+			// Update rotation euler
+			rotationEuler.setFromQuaternion(camera.quaternion);
+			
+			// Apply rotations
+			rotationEuler.y -= deltaX * mouseSensitivity;
+			rotationEuler.x = Math.max(
+				-Math.PI / 2.1, 
+				Math.min(Math.PI / 2.1, 
+				rotationEuler.x - deltaY * mouseSensitivity)
+			);
 
-			// Clamp the x rotation to prevent flipping
-			camera.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, camera.rotation.x));
+			// Convert back to quaternion
+			camera.quaternion.setFromEuler(rotationEuler);
 
 			previousMousePosition.x = event.clientX;
 			previousMousePosition.y = event.clientY;
@@ -528,7 +555,7 @@ let isChatVisible = true;
 
 			scene = new THREE.Scene();
 			
-			scene.background = isVideoVisible ? null : new THREE.Color(0x000000);
+			scene.background = isVideoVisible ? null : new THREE.TextureLoader().load('/assets/sky_texture.jpg');
 			
 			camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 10 );
 			camera.position.set( 0, 1.2, 0.3 );
@@ -614,7 +641,7 @@ let isChatVisible = true;
 
 			
 			if (isVideoVisible==false) {
-				scene.add( floor );
+				// scene.add( floor );
 			}
 
 			const menuGeometry = new THREE.PlaneGeometry( 0.24, 0.77 );
@@ -733,7 +760,7 @@ let isChatVisible = true;
 			itEntity.addComponent( Object3D, { object: instructionText } );
 
 			const hiButton = makeButtonMesh(0.2, 0.1, 0.01, 0x4287f5); // Blue color
-			const hiButtonText = createText('hi', 0.06);
+			const hiButtonText = createText('Dive', 0.06);
 			hiButtonText.material.opacity = 1;
 			hiButtonText.material.transparent = true;
 			hiButton.add(hiButtonText);
@@ -745,11 +772,16 @@ let isChatVisible = true;
 			hiEntity.addComponent(Intersectable);
 			hiEntity.addComponent(Object3D, { object: hiButton });
 			const hiAction = function () {
-				console.log('Hi');
-				const hiText = createText('Hi', 0.2);
+				console.log('Dive');
+				const hiText = createText('Dive', 0.2);
 				hiText.position.set(0, 1.5, -1);
 				scene.add(hiText);
 				setTimeout(() => scene.remove(hiText), 2000); // Remove after 2 seconds
+
+				// Toggle visibility of GLTF models
+				models.forEach(model => {
+					model.visible = !model.visible;
+				});
 			};
 			hiEntity.addComponent(Button, { action: hiAction });
 
@@ -792,7 +824,7 @@ let isChatVisible = true;
 				const videoElement = document.getElementById('video-background');
 				videoElement.style.display = isVideoVisible ? 'block' : 'none';
 				
-				scene.background = isVideoVisible ? null : new THREE.Color(0x000000);
+				scene.background = isVideoVisible ? null : new THREE.TextureLoader().load('path/to/your/sky_texture.jpg');
 				videoButtonText.text = isVideoVisible ? 'Video' : 'Show Video';
 				videoButton.material.color.setHex(isVideoVisible ? 0x4287f5 : 0xff0000);
 			};
@@ -886,6 +918,46 @@ let isChatVisible = true;
 				}
 			});
 
+			let scaleF=1.1;
+			// Add GLTFLoader import
+			const modelsFolders = [
+				{ 
+					// folder: 'squid_game',
+					// scale: [.01, .01, .01],  
+					folder: 'apartment', 
+					scale: [1*scaleF, 1*scaleF, 1*scaleF], 
+					position: [0, 0, 0], 
+					rotation: [0, 0, 0], 
+					animation: false 
+				}
+			];
+
+			const loader = new GLTFLoader();
+			modelsFolders.forEach((modelData) => {
+				loader.load(
+					`assets/models/${modelData.folder}/scene.gltf`,
+					(gltf) => {
+						const model = gltf.scene;
+						model.rotation.set(...(modelData.rotation || [0, 0, 0]));
+						
+						if (modelData.animation) {
+							model.mixer = new THREE.AnimationMixer(model);
+							model.mixer.clipAction(gltf.animations[0]).play();
+						}
+
+						model.scale.set(...modelData.scale);
+						model.position.set(...modelData.position);
+
+						scene.add(model);
+						models.push(model);
+					},
+					undefined,
+					(error) => {
+						console.error(`An error occurred while loading ${modelData.folder}:`, error);
+					}
+				);
+			});
+
 		}
 
 		function onWindowResize() {
@@ -923,28 +995,50 @@ let isChatVisible = true;
 				}
 			}
 
+			// Handle keyboard movement relative to camera direction
 			if (!renderer.xr.isPresenting) {
+				// Get forward and right vectors from camera's rotation
+				const forward = new THREE.Vector3(0, 0, -1);
+				const right = new THREE.Vector3(1, 0, 0);
+				forward.applyQuaternion(camera.quaternion);
+				right.applyQuaternion(camera.quaternion);
+
+				// Zero out y component to keep movement horizontal
+				forward.y = 0;
+				right.y = 0;
+				forward.normalize();
+				right.normalize();
+
 				if (keyStates['w']) {
-					camera.position.x -= Math.sin(camera.rotation.y) * moveSpeed;
-					camera.position.z -= Math.cos(camera.rotation.y) * moveSpeed;
+					camera.position.addScaledVector(forward, moveSpeed);
 				}
 				if (keyStates['s']) {
-					camera.position.x += Math.sin(camera.rotation.y) * moveSpeed;
-					camera.position.z += Math.cos(camera.rotation.y) * moveSpeed;
+					camera.position.addScaledVector(forward, -moveSpeed);
 				}
 				if (keyStates['a']) {
-					camera.position.x -= Math.cos(camera.rotation.y) * moveSpeed;
-					camera.position.z += Math.sin(camera.rotation.y) * moveSpeed;
+					camera.position.addScaledVector(right, -moveSpeed);
 				}
 				if (keyStates['d']) {
-					camera.position.x += Math.cos(camera.rotation.y) * moveSpeed;
-					camera.position.z -= Math.sin(camera.rotation.y) * moveSpeed;
+					camera.position.addScaledVector(right, moveSpeed);
+				}
+				if (keyStates['q']) {
+					camera.position.y += moveSpeed;
+				}
+				if (keyStates['e']) {
+					camera.position.y -= moveSpeed;
 				}
 			}
 
 			renderer.xr.updateCamera(camera);
 			world.execute(delta, elapsedTime);
 			renderer.render(scene, camera);
+
+			// Update animations for each model
+			models.forEach((model) => {
+				if (model && model.mixer) {
+					model.mixer.update(0.016);
+				}
+			});
 
 		}
 

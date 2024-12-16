@@ -10,6 +10,12 @@ This project is a web-based application that integrates Three.js for 3D renderin
 - **Flask Backend**: Serves the application and handles video processing.
 - **Interactive UI**: Includes a map and chat system embedded in iframes.
 
+## Screenshots  
+
+Here are some screenshots of the app showcasing its key features and design:  
+
+<img src="threejsDemo.png" alt="Home Screen" width="1000" />  
+
 ## Prerequisites
 
 - Python 3.x

@@ -557,8 +557,9 @@ let isChatVisible = true;
 			
 			scene.background = isVideoVisible ? null : new THREE.TextureLoader().load('/assets/sky_texture.jpg');
 			
-			camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 10 );
+			camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 100 );
 			camera.position.set( 0, 1.2, 0.3 );
+			// camera.position.set(5.23, 1.50, -2.41);
 
 			scene.add( new THREE.HemisphereLight( 0xcccccc, 0x999999, 3 ) );
 
@@ -824,7 +825,7 @@ let isChatVisible = true;
 				const videoElement = document.getElementById('video-background');
 				videoElement.style.display = isVideoVisible ? 'block' : 'none';
 				
-				scene.background = isVideoVisible ? null : new THREE.TextureLoader().load('path/to/your/sky_texture.jpg');
+				scene.background = isVideoVisible ? null : new THREE.TextureLoader().load('assets/sky_texture.jpg');
 				videoButtonText.text = isVideoVisible ? 'Video' : 'Show Video';
 				videoButton.material.color.setHex(isVideoVisible ? 0x4287f5 : 0xff0000);
 			};
@@ -918,15 +919,68 @@ let isChatVisible = true;
 				}
 			});
 
-			let scaleF=1.1;
-			// Add GLTFLoader import
-			const modelsFolders = [
+let scaleF=1.1;
+
+// Create pitched roof
+const roofHeight = 0.5;
+const roofWidth = 5;
+const roofDepth = 5;
+
+const roofGeometry = new THREE.BufferGeometry();
+const vertices = new Float32Array([
+    // Front face
+    -roofWidth/2, 0, roofDepth/2,
+    roofWidth/2, 0, roofDepth/2,
+    0, roofHeight, 0,
+    
+    // Back face
+    -roofWidth/2, 0, -roofDepth/2,
+    roofWidth/2, 0, -roofDepth/2,
+    0, roofHeight, 0,
+    
+    // Left face
+    -roofWidth/2, 0, -roofDepth/2,
+    -roofWidth/2, 0, roofDepth/2,
+    0, roofHeight, 0,
+    
+    // Right face
+    roofWidth/2, 0, -roofDepth/2,
+    roofWidth/2, 0, roofDepth/2,
+    0, roofHeight, 0,
+]);
+
+const indices = new Uint16Array([
+    0, 1, 2,  // Front
+    3, 4, 5,  // Back
+    6, 7, 8,  // Left
+    9, 10, 11 // Right
+]);
+
+roofGeometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+roofGeometry.setIndex(new THREE.BufferAttribute(indices, 1));
+roofGeometry.computeVertexNormals();
+
+const roofMaterial = new THREE.MeshPhongMaterial({ 
+    color: 0x000000,
+    shininess: 30,
+    side: THREE.DoubleSide,
+    transparent: true,
+    opacity: 0.9
+});
+
+const roof = new THREE.Mesh(roofGeometry, roofMaterial);
+roof.position.set(4.00, 2.8, 2.50);
+roof.scale.set(6, 6, 6);
+scene.add(roof);
+
+// Add GLTFLoader import
+const modelsFolders = [
 				{ 
 					// folder: 'squid_game',
 					// scale: [.01, .01, .01],  
-					folder: 'apartment', 
+					folder: 'apartment_construction', 
 					scale: [1*scaleF, 1*scaleF, 1*scaleF], 
-					position: [0, 0, 0], 
+					position: [4.00, -0.2, 2.50],
 					rotation: [0, 0, 0], 
 					animation: false 
 				}
@@ -969,10 +1023,17 @@ let isChatVisible = true;
 
 		}
 
-		function animate() {
+function animate() {
 
-			const delta = clock.getDelta();
-			const elapsedTime = clock.elapsedTime;
+const delta = clock.getDelta();
+const elapsedTime = clock.elapsedTime;
+
+// Log camera position
+// console.log('Camera position:', {
+//     x: camera.position.x.toFixed(2),
+//     y: camera.position.y.toFixed(2),
+//     z: camera.position.z.toFixed(2)
+// });
 
 			// Update menu toggle button position relative to camera
 			const menuToggleButton = scene.getObjectByName('menuToggle');

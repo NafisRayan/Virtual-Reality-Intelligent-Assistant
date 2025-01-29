@@ -919,9 +919,62 @@ let isChatVisible = true;
 				}
 			});
 
-			let scaleF=1.1;
-			// Add GLTFLoader import
-			const modelsFolders = [
+let scaleF=1.1;
+
+// Create pitched roof
+const roofHeight = 0.5;
+const roofWidth = 5;
+const roofDepth = 5;
+
+const roofGeometry = new THREE.BufferGeometry();
+const vertices = new Float32Array([
+    // Front face
+    -roofWidth/2, 0, roofDepth/2,
+    roofWidth/2, 0, roofDepth/2,
+    0, roofHeight, 0,
+    
+    // Back face
+    -roofWidth/2, 0, -roofDepth/2,
+    roofWidth/2, 0, -roofDepth/2,
+    0, roofHeight, 0,
+    
+    // Left face
+    -roofWidth/2, 0, -roofDepth/2,
+    -roofWidth/2, 0, roofDepth/2,
+    0, roofHeight, 0,
+    
+    // Right face
+    roofWidth/2, 0, -roofDepth/2,
+    roofWidth/2, 0, roofDepth/2,
+    0, roofHeight, 0,
+]);
+
+const indices = new Uint16Array([
+    0, 1, 2,  // Front
+    3, 4, 5,  // Back
+    6, 7, 8,  // Left
+    9, 10, 11 // Right
+]);
+
+roofGeometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+roofGeometry.setIndex(new THREE.BufferAttribute(indices, 1));
+roofGeometry.computeVertexNormals();
+
+const roofMaterial = new THREE.MeshPhongMaterial({ 
+    color: 0x000000,
+    shininess: 30,
+    side: THREE.DoubleSide,
+    transparent: true,
+    opacity: 0.9
+});
+
+const roof = new THREE.Mesh(roofGeometry, roofMaterial);
+roof.position.set(4.00, 2.8, 2.50);
+roof.scale.set(6, 6, 6);
+scene.add(roof);
+
+// Add GLTFLoader import
+const modelsFolders = [
 				{ 
 					// folder: 'squid_game',
 					// scale: [.01, .01, .01],  
@@ -976,11 +1029,11 @@ const delta = clock.getDelta();
 const elapsedTime = clock.elapsedTime;
 
 // Log camera position
-console.log('Camera position:', {
-    x: camera.position.x.toFixed(2),
-    y: camera.position.y.toFixed(2),
-    z: camera.position.z.toFixed(2)
-});
+// console.log('Camera position:', {
+//     x: camera.position.x.toFixed(2),
+//     y: camera.position.y.toFixed(2),
+//     z: camera.position.z.toFixed(2)
+// });
 
 			// Update menu toggle button position relative to camera
 			const menuToggleButton = scene.getObjectByName('menuToggle');

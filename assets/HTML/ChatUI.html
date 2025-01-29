@@ -39,41 +39,106 @@
         const sendBtn = document.getElementById('send-btn');
         const voiceBtn = document.getElementById('voice-btn');
 
+        // Conversation history
+        let conversationHistory = [];
+
         // Hugging Face API key
         const HUGGING_FACE_API_KEY = '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'
         // Function to add a message to the chat
         function addMessage(message, isUser = false) {
     const messageElement = document.createElement('div');
-    messageElement.classList.add('flex', isUser ? 'justify-end' : 'justify-start');
+    messageElement.classList.add('flex', 'flex-col', isUser ? 'items-end' : 'items-start', 'mb-4');
 
+    // Message container with improved styling
+    const messageContainer = document.createElement('div');
+    messageContainer.classList.add(
+    'flex', 
+    'items-end',
+    isUser ? 'space-x-reverse' : 'space-x-2', // Reverse spacing for user
+    'space-x-2', // Default space for non-user
+    isUser ? 'flex-row-reverse' : 'flex-row'
+);
+
+
+    // Avatar
+    const avatar = document.createElement('div');
+    avatar.classList.add('w-8', 'h-8', 'rounded-full', 'flex', 'items-center', 'justify-center', 
+        isUser ? 'bg-blue-500' : 'bg-gray-600');
+    avatar.innerHTML = `<i class="fas ${isUser ? 'fa-user' : 'fa-robot'} text-white text-sm"></i>`;
+    messageContainer.appendChild(avatar);
+
+    // Message group with role and content
+    const bubbleWrapper = document.createElement('div');
+    bubbleWrapper.classList.add('max-w-md', isUser ? 'ml-2' : 'mr-2');
+
+    // Role label
+    const roleLabel = document.createElement('div');
+    roleLabel.classList.add('text-xs', 'text-gray-400', 'mb-1');
+    roleLabel.textContent = `${isUser ? 'User' : 'Assistant'}:`;
+    bubbleWrapper.appendChild(roleLabel);
+
+    // Message content with formatting
     const textElement = document.createElement('div');
-    textElement.classList.add('max-w-xs', 'px-4', 'py-2', 'rounded-lg', isUser ? 'bg-blue-500' : 'bg-gray-600', 'text-white');
-    
-    // Ensure message is a string
-    textElement.textContent = String(message);
-    
-    messageElement.appendChild(textElement);
-    chatWindow.appendChild(messageElement);
-    chatWindow.scrollTop = chatWindow.scrollHeight;  // Scroll to the latest message
+    textElement.classList.add('px-4', 'py-2', 'rounded-lg', 
+        isUser ? 'bg-blue-500' : 'bg-gray-600',
+        isUser ? 'rounded-br-none' : 'rounded-bl-none',
+        'text-white', 'shadow-md', 'whitespace-pre-wrap');
 
+    // Format the message with better styling
+    let formattedMessage = String(message)
+        // Text formatting
+        .replace(/\*\*(.+?)\*\*/g, '<strong class="font-bold">$1</strong>') // Bold text
+        // List formatting - handle lists with proper spacing
+        .replace(/(\d+)\.\s+(.+?)(?=(?:\n|$))/g, (_, num, text) => 
+            `<div class="flex items-start py-1"><span class="mr-3 text-sm">•</span><span>${text}</span></div>`) // Numbered lists to bullets
+        // After list formatting, handle remaining line breaks
+        .split(/\n+/).map(para => para.trim()).filter(Boolean).join('<br><br>') // Clean paragraphs
+        .trim(); // Clean up extra whitespace
+    
+    textElement.innerHTML = formattedMessage;
+    
+    bubbleWrapper.appendChild(textElement);
+    messageContainer.appendChild(bubbleWrapper);
+
+    // Timestamp
+    const timestamp = document.createElement('div');
+    timestamp.classList.add('text-xs', 'text-gray-400', 'mt-1', 
+        isUser ? 'text-right' : 'text-left');
+    const time = new Date().toLocaleTimeString([], 
+        { hour: '2-digit', minute: '2-digit' });
+    timestamp.textContent = time;
+    
+    messageElement.appendChild(messageContainer);
+    messageElement.appendChild(timestamp);
+    chatWindow.appendChild(messageElement);
+    
     // If it's a bot response, add a voice option
     if (!isUser) {
-        addVoiceOption(messageElement);
+        addVoiceOption(messageContainer, bubbleWrapper);
     }
-        }
+
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+}
 
         // Add a button to read the response aloud
-        function addVoiceOption(messageElement) {
+        function addVoiceOption(container, bubble) {
             const voiceButton = document.createElement('button');
-            voiceButton.classList.add('mt-2', "ml-5", 'w-9', 'h-9','bg-green-500', 'text-white', 'rounded-lg', 'hover:bg-green-600', 'focus:outline-none', 'focus:ring-2', 'focus:ring-green-500');
-
-            voiceButton.onclick = () => readOutLoud(messageElement.textContent);  // Read the message aloud
+            voiceButton.classList.add('ml-2', 'w-8', 'h-8', 'bg-green-500', 'text-white', 'rounded-full', 'flex', 'items-center', 'justify-center', 'hover:bg-green-600', 'focus:outline-none', 'focus:ring-2', 'focus:ring-green-500');
 
             const voiceIcon = document.createElement('i');
-            voiceIcon.classList.add('fas', 'fa-volume-up');  // Volume up icon
+            voiceIcon.classList.add('fas', 'fa-volume-up', 'text-sm');
             voiceButton.appendChild(voiceIcon);
 
-            messageElement.appendChild(voiceButton);
+            voiceButton.onclick = () => {
+                // Get text content only from the formatted message, skipping role label
+                const messageDiv = bubble.querySelector('.whitespace-pre-wrap');
+                if (messageDiv) {
+                    const plainText = messageDiv.innerText || messageDiv.textContent;
+                    readOutLoud(plainText);
+                }
+            };
+
+            container.appendChild(voiceButton);
         }
 
         // Function to read the response aloud using Text-to-Speech
@@ -86,6 +151,14 @@
         // Function to generate response using Hugging Face Gemma 9B model
 // Function to generate response using Hugging Face model
 async function generateResponse(prompt) {
+    // Add user message to history
+    conversationHistory.push({ role: "user", content: prompt });
+
+    // Prepare conversation context
+    const fullContext = conversationHistory.map(msg => 
+        `${msg.role === "user" ? "User" : "Assistant"}: ${msg.content}`
+    ).join("\n") + "\nAssistant:";
+
     return new Promise((resolve, reject) => {
         fetch('https://api-inference.huggingface.co/models/google/gemma-2-9b-it', {
             method: 'POST',
@@ -94,7 +167,12 @@ async function generateResponse(prompt) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                inputs: prompt
+                inputs: fullContext,
+                parameters: {
+                    max_new_tokens: 250,
+                    temperature: 0.7,
+                    top_p: 0.95
+                }
             })
         })
         .then(response => {
@@ -107,8 +185,17 @@ async function generateResponse(prompt) {
             let botResponse = "Sorry, I couldn't understand the response.";
 
             if (Array.isArray(data) && data.length > 0) {
-                // Check for 'generated_text' property in the first item of the response array
-                botResponse = data[0]?.generated_text || botResponse;
+                let responseText = data[0]?.generated_text || "";
+                
+                // Extract only the last response after "Assistant:"
+                const parts = responseText.split(/User:|Assistant:/g);
+                const cleanResponse = parts[parts.length - 1].trim();
+                botResponse = cleanResponse || "Sorry, I couldn't understand the response.";
+                
+                // If no valid response found, use default message
+                if (!botResponse) {
+                    botResponse = "Sorry, I couldn't understand the response.";
+                }
             }
 
             console.log('Extracted Bot Response:', botResponse);
@@ -125,20 +212,27 @@ async function generateResponse(prompt) {
         function sendMessage() {
     const message = userInput.value.trim();
     if (message) {
+        // Add loading indicator
+        const loadingElement = document.createElement('div');
+        loadingElement.classList.add('flex', 'justify-start', 'items-center', 'space-x-2', 'text-gray-400');
+        loadingElement.innerHTML = '<div class="animate-bounce">●</div><div class="animate-bounce delay-100">●</div><div class="animate-bounce delay-200">●</div>';
+        chatWindow.appendChild(loadingElement);
+        
         addMessage(message, true);  // Add user message
         
         generateResponse(message)
             .then(response => {
+                // Remove loading indicator
+                loadingElement.remove();
+                
                 console.log('Generated Response:', response);
+                const botResponse = response;
                 
-                // Directly use the bot response
-                const botResponse = response;  // Already cleaned up by generateResponse
-                console.log('Extracted Bot Response:', botResponse);
+                // Add bot response to history
+                conversationHistory.push({ role: "assistant", content: botResponse });
                 
-                addMessage(botResponse, false);  // Add bot response
-                const generatedResponseElement = document.getElementById('generated-response');
-                generatedResponseElement.textContent = botResponse;
-                generatedResponseElement.style.display = 'block';
+                // Display the response
+                addMessage(botResponse, false);
                 
                 // Scroll to the latest message
                 chatWindow.scrollTop = chatWindow.scrollHeight;

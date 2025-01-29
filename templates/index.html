@@ -557,8 +557,9 @@ let isChatVisible = true;
 			
 			scene.background = isVideoVisible ? null : new THREE.TextureLoader().load('/assets/sky_texture.jpg');
 			
-			camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 10 );
+			camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 100 );
 			camera.position.set( 0, 1.2, 0.3 );
+			// camera.position.set(5.23, 1.50, -2.41);
 
 			scene.add( new THREE.HemisphereLight( 0xcccccc, 0x999999, 3 ) );
 
@@ -824,7 +825,7 @@ let isChatVisible = true;
 				const videoElement = document.getElementById('video-background');
 				videoElement.style.display = isVideoVisible ? 'block' : 'none';
 				
-				scene.background = isVideoVisible ? null : new THREE.TextureLoader().load('path/to/your/sky_texture.jpg');
+				scene.background = isVideoVisible ? null : new THREE.TextureLoader().load('assets/sky_texture.jpg');
 				videoButtonText.text = isVideoVisible ? 'Video' : 'Show Video';
 				videoButton.material.color.setHex(isVideoVisible ? 0x4287f5 : 0xff0000);
 			};
@@ -924,9 +925,9 @@ let isChatVisible = true;
 				{ 
 					// folder: 'squid_game',
 					// scale: [.01, .01, .01],  
-					folder: 'apartment', 
+					folder: 'apartment_construction', 
 					scale: [1*scaleF, 1*scaleF, 1*scaleF], 
-					position: [0, 0, 0], 
+					position: [4.00, -0.2, 2.50],
 					rotation: [0, 0, 0], 
 					animation: false 
 				}
@@ -969,10 +970,17 @@ let isChatVisible = true;
 
 		}
 
-		function animate() {
+function animate() {
 
-			const delta = clock.getDelta();
-			const elapsedTime = clock.elapsedTime;
+const delta = clock.getDelta();
+const elapsedTime = clock.elapsedTime;
+
+// Log camera position
+console.log('Camera position:', {
+    x: camera.position.x.toFixed(2),
+    y: camera.position.y.toFixed(2),
+    z: camera.position.z.toFixed(2)
+});
 
 			// Update menu toggle button position relative to camera
 			const menuToggleButton = scene.getObjectByName('menuToggle');

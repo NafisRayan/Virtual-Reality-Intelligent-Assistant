@@ -1024,39 +1024,56 @@ const modelsFolders = [
 		}
 
 function animate() {
+    const delta = clock.getDelta();
+    const elapsedTime = clock.elapsedTime;
 
-const delta = clock.getDelta();
-const elapsedTime = clock.elapsedTime;
+    // Update menu toggle button and menu panel position relative to camera
+    const menuToggleButton = scene.getObjectByName('menuToggle');
+    const menuPanel = scene.getObjectByName('menuPanel');
+    
+    if (menuToggleButton && menuPanel) {
+        if (renderer.xr.isPresenting) {
+            const xrCamera = renderer.xr.getCamera();
+            
+            // Toggle button positioning
+            const toggleDistance = 0.5;
+            const toggleOffset = new THREE.Vector3(0, 0.15, -toggleDistance);
+            toggleOffset.applyQuaternion(xrCamera.quaternion);
+            menuToggleButton.position.copy(xrCamera.position).add(toggleOffset);
+            menuToggleButton.quaternion.copy(xrCamera.quaternion);
+            
+            // Menu panel positioning
+            const menuDistance = 1; // Slightly further back than toggle
+            const menuOffset = new THREE.Vector3(0.4, 0, -menuDistance); // Offset to the right
+            menuOffset.applyQuaternion(xrCamera.quaternion);
+            menuPanel.position.copy(xrCamera.position).add(menuOffset);
+            
+            // Make menu face the camera with slight angle
+            menuPanel.quaternion.copy(xrCamera.quaternion);
+            menuPanel.rotateY(-Math.PI / 12); // Slight angle for better visibility
+            
+        } else {
+            // Non-VR positioning
+            const toggleDistance = 0.5;
+            const toggleOffset = new THREE.Vector3(-0.3, 0.15, -toggleDistance);
+            toggleOffset.applyQuaternion(camera.quaternion);
+            menuToggleButton.position.copy(camera.position).add(toggleOffset);
+            menuToggleButton.quaternion.copy(camera.quaternion);
+            
+            // Menu panel positioning
+            const menuDistance = 1;
+            const menuOffset = new THREE.Vector3(0.4, 0, -menuDistance);
+            menuOffset.applyQuaternion(camera.quaternion);
+            menuPanel.position.copy(camera.position).add(menuOffset);
+            
+            // Make menu face the camera with slight angle
+            menuPanel.quaternion.copy(camera.quaternion);
+            menuPanel.rotateY(-Math.PI / 12);
+        }
+    }
 
-// Log camera position
-// console.log('Camera position:', {
-//     x: camera.position.x.toFixed(2),
-//     y: camera.position.y.toFixed(2),
-//     z: camera.position.z.toFixed(2)
-// });
 
-			// Update menu toggle button position relative to camera
-			const menuToggleButton = scene.getObjectByName('menuToggle');
-			if (menuToggleButton) {
-				if (renderer.xr.isPresenting) {
-					const xrCamera = renderer.xr.getCamera();
-					menuToggleButton.position.x = xrCamera.position.x - 0.3 - 0.1;
-					menuToggleButton.position.y = xrCamera.position.y + 0.3 - 0.15;
-					menuToggleButton.position.z = xrCamera.position.z - 0.5;
-					
-					// Make button face the camera
-					menuToggleButton.quaternion.copy(xrCamera.quaternion);
-				} else {
-					menuToggleButton.position.x = camera.position.x - 0.3 - 0.1;
-					menuToggleButton.position.y = camera.position.y + 0.3 - 0.15;
-					menuToggleButton.position.z = camera.position.z - 0.5;
-					
-					// Make button face the camera
-					menuToggleButton.quaternion.copy(camera.quaternion);
-				}
-			}
-
-			// Handle keyboard movement relative to camera direction
+    // Handle keyboard movement relative to camera direction
 			if (!renderer.xr.isPresenting) {
 				// Get forward and right vectors from camera's rotation
 				const forward = new THREE.Vector3(0, 0, -1);

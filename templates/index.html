@@ -1037,7 +1037,7 @@ function animate() {
             
             // Toggle button positioning
             const toggleDistance = 0.5;
-            const toggleOffset = new THREE.Vector3(0, 0.15, -toggleDistance);
+            const toggleOffset = new THREE.Vector3(-0.3, 0.15, -toggleDistance);
             toggleOffset.applyQuaternion(xrCamera.quaternion);
             menuToggleButton.position.copy(xrCamera.position).add(toggleOffset);
             menuToggleButton.quaternion.copy(xrCamera.quaternion);

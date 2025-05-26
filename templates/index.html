@@ -779,10 +779,11 @@ let isChatVisible = true;
 				scene.add(hiText);
 				setTimeout(() => scene.remove(hiText), 2000); // Remove after 2 seconds
 
-				// Toggle visibility of GLTF models
+				// Toggle visibility of GLTF models and roof
 				models.forEach(model => {
 					model.visible = !model.visible;
 				});
+				roof.visible = !roof.visible;
 			};
 			hiEntity.addComponent(Button, { action: hiAction });
 

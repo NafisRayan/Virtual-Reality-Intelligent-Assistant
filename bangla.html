@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Speech to Text Chatbot</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.bangla/1.3.0/jquery.bangla.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/annyang/2.6.0/annyang.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/jquery.bangla@1.3.2/dist/jquery.bangla.min.js"></script>
+    </head>
+<body class="h-screen overflow-hidden bg-transparent">
+    <div class="flex flex-col h-full">
+        <!-- Chat Window -->
+        <div id="chat-window" class="flex-grow overflow-y-auto p-4 space-y-4 bg-black bg-opacity-20">
+            <!-- Chat messages will be inserted here -->
+        </div>
+        
+        <!-- Input Section -->
+        <div class="p-4 border-t border-gray-600 bg-black bg-opacity-0">
+            <div class="flex space-x-2">
+                <!-- Blue Voice Button for English Speech Recognition -->
+                <button id="voice-btn" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <i class="fas fa-microphone"></i>
+                    <span class="ml-1 text-xs">EN</span>
+                </button>
+                
+                <!-- Green Voice Button for Bangla Speech Recognition -->
+                <button id="voice-btn-alt" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500">
+                    <i class="fas fa-microphone"></i>
+                    <span class="ml-1 text-xs">বাং</span>
+                </button>
+                
+                <!-- Text Input for User -->
+                <input type="text" id="user-input" class="flex-grow px-3 py-2 bg-gray-800 text-white border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Type your message...">
+                
+                <!-- Send Button -->
+                <button id="send-btn" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">Send</button>
+                
+                <!-- Toggle Bangla Input Button -->
+                <button id="toggle-bangla" class="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <i class="fas fa-keyboard"></i>
+                    <span class="ml-1 text-xs">বাং</span>
+                </button>
+            </div>
+            
+            <!-- Status Message -->
+            <div id="status-message" class="text-xs text-gray-400 mt-2 hidden"></div>
+        </div>
+
+    <script>
+ 
+        // DOM elements
+        const chatWindow = document.getElementById('chat-window');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+        const voiceBtn = document.getElementById('voice-btn');
+        const voiceBtnAlt = document.getElementById('voice-btn-alt');
+        const toggleBanglaBtn = document.getElementById('toggle-bangla');
+        const statusMessage = document.getElementById('status-message');
+        
+        document.addEventListener('DOMContentLoaded', () => {
+        if (typeof $.fn.bangla !== 'function') {
+            console.error('jQuery Bangla plugin is not loaded!');
+        } else {
+            console.log('jQuery Bangla plugin loaded successfully.');
+        }
+    });
+        // State tracking
+        let banglaInputMode = false;
+        let isRecognizing = false;
+        let recognitionAttempts = 0;
+        const MAX_RECOGNITION_ATTEMPTS = 3;
+
+        // Conversation history
+        let conversationHistory = [];
+
+        // Hugging Face API key
+        const HUGGING_FACE_API_KEY = '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';
+        
+        // Function to show status message
+        function showStatus(message, isError = false) {
+            statusMessage.textContent = message;
+            statusMessage.classList.remove('hidden', 'text-red-500', 'text-green-500');
+            statusMessage.classList.add(isError ? 'text-red-500' : 'text-green-500');
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                statusMessage.classList.add('hidden');
+            }, 5000);
+        }
+        
+        // Function to add a message to the chat
+        function addMessage(message, isUser = false) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('flex', 'flex-col', isUser ? 'items-end' : 'items-start', 'mb-4');
+
+            // Message container with improved styling
+            const messageContainer = document.createElement('div');
+            messageContainer.classList.add(
+                'flex', 
+                'items-end',
+                isUser ? 'space-x-reverse' : 'space-x-2', // Reverse spacing for user
+                'space-x-2', // Default space for non-user
+                isUser ? 'flex-row-reverse' : 'flex-row'
+            );
+
+            // Avatar
+            const avatar = document.createElement('div');
+            avatar.classList.add('w-8', 'h-8', 'rounded-full', 'flex', 'items-center', 'justify-center', 
+                isUser ? 'bg-blue-500' : 'bg-gray-600');
+            avatar.innerHTML = `<i class="fas ${isUser ? 'fa-user' : 'fa-robot'} text-white text-sm"></i>`;
+            messageContainer.appendChild(avatar);
+
+            // Message group with role and content
+            const bubbleWrapper = document.createElement('div');
+            bubbleWrapper.classList.add('max-w-md', isUser ? 'ml-2' : 'mr-2');
+
+            // Role label
+            const roleLabel = document.createElement('div');
+            roleLabel.classList.add('text-xs', 'text-gray-400', 'mb-1');
+            roleLabel.textContent = `${isUser ? 'User' : 'Assistant'}:`;
+            bubbleWrapper.appendChild(roleLabel);
+
+            // Message content with formatting
+            const textElement = document.createElement('div');
+            textElement.classList.add('px-4', 'py-2', 'rounded-lg', 
+                isUser ? 'bg-blue-500' : 'bg-gray-600',
+                isUser ? 'rounded-br-none' : 'rounded-bl-none',
+                'text-white', 'shadow-md', 'whitespace-pre-wrap');
+
+            // Format the message with better styling
+            let formattedMessage = String(message)
+                // Text formatting
+                .replace(/\*\*(.+?)\*\*/g, '<strong class="font-bold">$1</strong>') // Bold text
+                // List formatting - handle lists with proper spacing
+                .replace(/(\d+)\.\s+(.+?)(?=(?:\n|$))/g, (_, num, text) => 
+                    `<div class="flex items-start py-1"><span class="mr-3 text-sm">•</span><span>${text}</span></div>`) // Numbered lists to bullets
+                // After list formatting, handle remaining line breaks
+                .split(/\n+/).map(para => para.trim()).filter(Boolean).join('<br><br>') // Clean paragraphs
+                .trim(); // Clean up extra whitespace
+            
+            textElement.innerHTML = formattedMessage;
+            
+            bubbleWrapper.appendChild(textElement);
+            messageContainer.appendChild(bubbleWrapper);
+
+            // Timestamp
+            const timestamp = document.createElement('div');
+            timestamp.classList.add('text-xs', 'text-gray-400', 'mt-1', 
+                isUser ? 'text-right' : 'text-left');
+            const time = new Date().toLocaleTimeString([], 
+                { hour: '2-digit', minute: '2-digit' });
+            timestamp.textContent = time;
+            
+            messageElement.appendChild(messageContainer);
+            messageElement.appendChild(timestamp);
+            chatWindow.appendChild(messageElement);
+            
+            // If it's a bot response, add a voice option
+            if (!isUser) {
+                addVoiceOption(messageContainer, bubbleWrapper);
+            }
+
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        // Add a button to read the response aloud
+        function addVoiceOption(container, bubble) {
+            const voiceButton = document.createElement('button');
+            voiceButton.classList.add('ml-2', 'w-8', 'h-8', 'bg-green-500', 'text-white', 'rounded-full', 'flex', 'items-center', 'justify-center', 'hover:bg-green-600', 'focus:outline-none', 'focus:ring-2', 'focus:ring-green-500');
+
+            const voiceIcon = document.createElement('i');
+            voiceIcon.classList.add('fas', 'fa-volume-up', 'text-sm');
+            voiceButton.appendChild(voiceIcon);
+
+            voiceButton.onclick = () => {
+                // Get text content only from the formatted message, skipping role label
+                const messageDiv = bubble.querySelector('.whitespace-pre-wrap');
+                if (messageDiv) {
+                    const plainText = messageDiv.innerText || messageDiv.textContent;
+                    readOutLoud(plainText);
+                }
+            };
+
+            container.appendChild(voiceButton);
+        }
+
+        // Function to read the response aloud using Text-to-Speech
+        function readOutLoud(text) {
+            const speech = new SpeechSynthesisUtterance();
+            speech.text = text;
+            
+            // Check if we have a Bangla voice available
+            if (banglaInputMode) {
+                const voices = window.speechSynthesis.getVoices();
+                const banglaVoice = voices.find(voice => 
+                    voice.lang === 'bn-BD' || voice.lang === 'bn-IN');
+                
+                if (banglaVoice) {
+                    speech.voice = banglaVoice;
+                    speech.lang = banglaVoice.lang;
+                }
+            }
+            
+            window.speechSynthesis.speak(speech);
+        }
+
+        // Function to generate response using Hugging Face model
+        async function generateResponse(prompt) {
+            // Add user message to history
+            conversationHistory.push({ role: "user", content: prompt });
+
+            // Prepare conversation context
+            const fullContext = conversationHistory.map(msg => 
+                `${msg.role === "user" ? "User" : "Assistant"}: ${msg.content}`
+            ).join("\n") + "\nAssistant:";
+
+            return new Promise((resolve, reject) => {
+                fetch('https://api-inference.huggingface.co/models/google/gemma-2-9b-it', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${HUGGING_FACE_API_KEY}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        inputs: fullContext,
+                        parameters: {
+                            max_new_tokens: 250,
+                            temperature: 0.7,
+                            top_p: 0.95
+                        }
+                    })
+                })
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    console.log('Response headers:', Object.fromEntries(response.headers));
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Response data:', data);
+                    let botResponse = "Sorry, I couldn't understand the response.";
+
+                    if (Array.isArray(data) && data.length > 0) {
+                        let responseText = data[0]?.generated_text || "";
+                        
+                        // Extract only the last response after "Assistant:"
+                        const parts = responseText.split(/User:|Assistant:/g);
+                        const cleanResponse = parts[parts.length - 1].trim();
+                        botResponse = cleanResponse || "Sorry, I couldn't understand the response.";
+                        
+                        // If no valid response found, use default message
+                        if (!botResponse) {
+                            botResponse = "Sorry, I couldn't understand the response.";
+                        }
+                    }
+
+                    console.log('Extracted Bot Response:', botResponse);
+                    resolve(botResponse);
+                })
+                .catch(error => {
+                    console.error('Error fetching API:', error);
+                    reject(error);
+                });
+            });
+        }
+
+        // Bot response logic
+        function sendMessage() {
+            const message = userInput.value.trim();
+            if (message) {
+                // Add loading indicator
+                const loadingElement = document.createElement('div');
+                loadingElement.classList.add('flex', 'justify-start', 'items-center', 'space-x-2', 'text-gray-400');
+                loadingElement.innerHTML = '<div class="animate-bounce">●</div><div class="animate-bounce delay-100">●</div><div class="animate-bounce delay-200">●</div>';
+                chatWindow.appendChild(loadingElement);
+                
+                addMessage(message, true);  // Add user message
+                
+                generateResponse(message)
+                    .then(response => {
+                        // Remove loading indicator
+                        loadingElement.remove();
+                        
+                        console.log('Generated Response:', response);
+                        const botResponse = response;
+                        
+                        // Add bot response to history
+                        conversationHistory.push({ role: "assistant", content: botResponse });
+                        
+                        // Display the response
+                        addMessage(botResponse, false);
+                        
+                        // Scroll to the latest message
+                        chatWindow.scrollTop = chatWindow.scrollHeight;
+                    })
+                    .catch(error => {
+                        console.error("Error generating response:", error);
+                        loadingElement.remove();
+                        addMessage("Sorry, I encountered an issue generating the response.", false);
+                    });
+
+                userInput.value = '';       // Clear input field
+            }
+        }
+
+        // Event listeners for sending messages
+        sendBtn.addEventListener('click', sendMessage);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Voice Recognition (Speech to Text) for English - Blue Button
+        voiceBtn.addEventListener('click', () => {
+            if (isRecognizing) {
+                showStatus("Already listening. Please finish speaking first.", true);
+                return;
+            }
+            
+            // Check if SpeechRecognition is supported
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                const recognition = new SpeechRecognition();
+
+                recognition.lang = 'en-US';  
+                recognition.interimResults = false;  
+                recognition.continuous = false;  
+
+                // Visual feedback for recording
+                voiceBtn.classList.add('animate-pulse');
+                voiceBtn.style.backgroundColor = '#f56565'; // Red color to indicate recording
+                isRecognizing = true;
+
+                recognition.onstart = () => {
+                    console.log('English speech recognition started');
+                    showStatus("Listening for English...");
+                };
+
+                recognition.onerror = (event) => {
+                    console.error("Speech recognition error:", event.error);
+                    voiceBtn.classList.remove('animate-pulse');
+                    voiceBtn.style.backgroundColor = ''; // Reset color
+                    isRecognizing = false;
+                    
+                    // Show appropriate error message
+                    if (event.error === 'network') {
+                        showStatus("Network error. Check your internet connection.", true);
+                    } else if (event.error === 'not-allowed' || event.error === 'permission-denied') {
+                        showStatus("Microphone access denied. Please enable microphone permissions.", true);
+                    } else {
+                        showStatus(`Speech recognition error: ${event.error}`, true);
+                    }
+                };
+
+                recognition.onresult = (event) => {
+                    voiceBtn.classList.remove('animate-pulse');
+                    voiceBtn.style.backgroundColor = ''; // Reset color
+                    isRecognizing = false;
+                    
+                    if (event.results[0] && event.results[0].isFinal) {
+                        userInput.value += event.results[0][0].transcript + ' ';
+                        showStatus("Speech recognized successfully!");
+                    }
+                };
+
+                recognition.onend = () => {
+                    voiceBtn.classList.remove('animate-pulse');
+                    voiceBtn.style.backgroundColor = ''; // Reset color
+                    isRecognizing = false;
+                };
+
+                // Start speech recognition
+                try {
+                    recognition.start();
+                } catch (error) {
+                    console.error("Failed to start speech recognition:", error);
+                    voiceBtn.classList.remove('animate-pulse');
+                    voiceBtn.style.backgroundColor = ''; // Reset color
+                    isRecognizing = false;
+                    showStatus("Failed to start speech recognition. Try again later.", true);
+                }
+            } else {
+                showStatus("Your browser does not support speech recognition.", true);
+            }
+        });
+        
+        // Fallback method for Bangla input (manual typing with conversion)
+        toggleBanglaBtn.addEventListener('click', () => {
+            banglaInputMode = !banglaInputMode;
+            
+            if (banglaInputMode) {
+                toggleBanglaBtn.classList.add('bg-purple-700');
+                toggleBanglaBtn.classList.remove('bg-purple-500');
+                showStatus("Bangla input mode activated. Type in phonetic Bangla.");
+                
+                // Enable jQuery Bangla on input field
+                $(userInput).bangla();
+            } else {
+                toggleBanglaBtn.classList.remove('bg-purple-700');
+                toggleBanglaBtn.classList.add('bg-purple-500');
+                showStatus("English input mode activated.");
+                
+                // Disable jQuery Bangla on input field
+                $(userInput).unbind('.bangla');
+            }
+        });
+
+        // Voice Recognition for Bangla - Green Button with improved error handling
+        // Define callback functions for Annyang
+const resultCallback = function(phrases) {
+  if (phrases.length > 0) {
+    userInput.value += phrases[0] + ' ';
+    showStatus("বাংলা টেক্সট সফলভাবে শনাক্ত হয়েছে!"); // "Bangla text successfully recognized!"
+    annyang.abort(); // Stop listening after recognition
+  }
+};
+
+const errorCallback = function() {
+  showStatus("বাংলা স্পিচ রিকগনিশন সমস্যা।", true); // "Bangla speech recognition issue."
+  voiceBtnAlt.classList.remove('animate-pulse');
+  voiceBtnAlt.style.backgroundColor = ''; // Reset color
+  isRecognizing = false;
+};
+
+const startCallback = function() {
+  voiceBtnAlt.classList.add('animate-pulse');
+  voiceBtnAlt.style.backgroundColor = '#f56565'; // Red color to indicate recording
+  isRecognizing = true;
+  showStatus("বাংলায় শোনা হচ্ছে..."); // "Listening in Bangla..."
+};
+
+const endCallback = function() {
+  voiceBtnAlt.classList.remove('animate-pulse');
+  voiceBtnAlt.style.backgroundColor = ''; // Reset color
+  isRecognizing = false;
+  // Remove callbacks to prevent accumulation
+  annyang.removeCallback('result', resultCallback);
+  annyang.removeCallback('error', errorCallback);
+  annyang.removeCallback('start', startCallback);
+  annyang.removeCallback('end', endCallback);
+};
+
+// Event listener for Bangla voice button
+voiceBtnAlt.addEventListener('click', () => {
+  if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'bn-BD'; // Bangla (Bangladesh)
+
+    recognition.onstart = () => {
+      console.log("Bangla recognition started");
+      voiceBtnAlt.classList.add('animate-pulse');
+      voiceBtnAlt.style.backgroundColor = '#f56565';
+      isRecognizing = true;
+      showStatus("বাংলায় শোনা হচ্ছে...");
+    };
+
+    recognition.onresult = (event) => {
+      console.log("Recognized:", event.results[0][0].transcript);
+      voiceBtnAlt.classList.remove('animate-pulse');
+      voiceBtnAlt.style.backgroundColor = '';
+      isRecognizing = false;
+      userInput.value += event.results[0][0].transcript + ' ';
+      showStatus("বাংলা টেক্সট সফলভাবে শনাক্ত হয়েছে!");
+    };
+
+    recognition.onerror = (event) => {
+      console.error("Recognition error:", event.error);
+      voiceBtnAlt.classList.remove('animate-pulse');
+      voiceBtnAlt.style.backgroundColor = '';
+      isRecognizing = false;
+      showStatus(`সমস্যা: ${event.error}`, true);
+    };
+
+    recognition.onend = () => {
+      console.log("Recognition ended");
+      voiceBtnAlt.classList.remove('animate-pulse');
+      voiceBtnAlt.style.backgroundColor = '';
+      isRecognizing = false;
+    };
+
+    try {
+      recognition.start();
+    } catch (error) {
+      console.error("Start error:", error);
+      showStatus("রিকগনিশন শুরু করতে ব্যর্থ।", true);
+    }
+  } else {
+    showStatus("ব্রাউজার স্পিচ রিকগনিশন সমর্থন করে না।", true);
+  }
+});
+        
+        // Initialize the chat with a welcome message
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                addMessage("Welcome! You can speak in English (blue button), Bangla (green button), or type in Bangla using the purple keyboard button.", false);
+                addMessage("স্বাগতম! আপনি ইংরেজিতে (নীল বাটন) বা বাংলায় (সবুজ বাটন) কথা বলতে পারেন, অথবা বেগুনি কীবোর্ড বাটন ব্যবহার করে বাংলা টাইপ করতে পারেন।", false);
+            }, 500);
+        });
+    </script>
+</body>
+</html>

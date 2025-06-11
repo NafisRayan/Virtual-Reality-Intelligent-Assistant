@@ -10,8 +10,6 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.bangla/1.3.0/jquery.bangla.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/annyang/2.6.0/annyang.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/jquery.bangla@1.3.2/dist/jquery.bangla.min.js"></script>
-        <!-- Add Hugging Face Inference Client -->
-        <script type="module" src="https://cdn.skypack.dev/@huggingface/inference"></script>
     </head>
 <body class="h-screen overflow-hidden bg-transparent">
     <div class="flex flex-col h-full">
@@ -51,12 +49,9 @@
             <!-- Status Message -->
             <div id="status-message" class="text-xs text-gray-400 mt-2 hidden"></div>
         </div>
-    </div>
 
-    <script type="module">
-        // Import HuggingFace Inference Client
-        import { HfInference } from 'https://cdn.skypack.dev/@huggingface/inference';
-
+    <script>
+ 
         // DOM elements
         const chatWindow = document.getElementById('chat-window');
         const userInput = document.getElementById('user-input');
@@ -67,13 +62,12 @@
         const statusMessage = document.getElementById('status-message');
         
         document.addEventListener('DOMContentLoaded', () => {
-            if (typeof $.fn.bangla !== 'function') {
-                console.error('jQuery Bangla plugin is not loaded!');
-            } else {
-                console.log('jQuery Bangla plugin loaded successfully.');
-            }
-        });
-
+        if (typeof $.fn.bangla !== 'function') {
+            console.error('jQuery Bangla plugin is not loaded!');
+        } else {
+            console.log('jQuery Bangla plugin loaded successfully.');
+        }
+    });
         // State tracking
         let banglaInputMode = false;
         let isRecognizing = false;
@@ -83,9 +77,8 @@
         // Conversation history
         let conversationHistory = [];
 
-        // Hugging Face API key and client
+        // Hugging Face API key
         const HUGGING_FACE_API_KEY = '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';
-        const hf = new HfInference(HUGGING_FACE_API_KEY);
         
         // Function to show status message
         function showStatus(message, isError = false) {
@@ -109,8 +102,8 @@
             messageContainer.classList.add(
                 'flex', 
                 'items-end',
-                isUser ? 'space-x-reverse' : 'space-x-2',
-                'space-x-2',
+                isUser ? 'space-x-reverse' : 'space-x-2', // Reverse spacing for user
+                'space-x-2', // Default space for non-user
                 isUser ? 'flex-row-reverse' : 'flex-row'
             );
 
@@ -140,11 +133,14 @@
 
             // Format the message with better styling
             let formattedMessage = String(message)
-                .replace(/\*\*(.+?)\*\*/g, '<strong class="font-bold">$1</strong>')
+                // Text formatting
+                .replace(/\*\*(.+?)\*\*/g, '<strong class="font-bold">$1</strong>') // Bold text
+                // List formatting - handle lists with proper spacing
                 .replace(/(\d+)\.\s+(.+?)(?=(?:\n|$))/g, (_, num, text) => 
-                    `<div class="flex items-start py-1"><span class="mr-3 text-sm">•</span><span>${text}</span></div>`)
-                .split(/\n+/).map(para => para.trim()).filter(Boolean).join('<br><br>')
-                .trim();
+                    `<div class="flex items-start py-1"><span class="mr-3 text-sm">•</span><span>${text}</span></div>`) // Numbered lists to bullets
+                // After list formatting, handle remaining line breaks
+                .split(/\n+/).map(para => para.trim()).filter(Boolean).join('<br><br>') // Clean paragraphs
+                .trim(); // Clean up extra whitespace
             
             textElement.innerHTML = formattedMessage;
             
@@ -181,6 +177,7 @@
             voiceButton.appendChild(voiceIcon);
 
             voiceButton.onclick = () => {
+                // Get text content only from the formatted message, skipping role label
                 const messageDiv = bubble.querySelector('.whitespace-pre-wrap');
                 if (messageDiv) {
                     const plainText = messageDiv.innerText || messageDiv.textContent;
@@ -196,6 +193,7 @@
             const speech = new SpeechSynthesisUtterance();
             speech.text = text;
             
+            // Check if we have a Bangla voice available
             if (banglaInputMode) {
                 const voices = window.speechSynthesis.getVoices();
                 const banglaVoice = voices.find(voice => 
@@ -210,83 +208,63 @@
             window.speechSynthesis.speak(speech);
         }
 
-        // Function to generate response using new Hugging Face API
+        // Function to generate response using Hugging Face model
         async function generateResponse(prompt) {
             // Add user message to history
             conversationHistory.push({ role: "user", content: prompt });
 
-            try {
-                // Use the new chat completion API
-                const response = await hf.chatCompletion({
-                    model: "google/gemma-2-9b-it",
-                    messages: conversationHistory,
-                    max_tokens: 250,
-                    temperature: 0.7,
-                    top_p: 0.95
-                });
-
-                console.log('Full response:', response);
-                
-                const botResponse = response.choices[0]?.message?.content || "Sorry, I couldn't generate a response.";
-                
-                // Add bot response to history
-                conversationHistory.push({ role: "assistant", content: botResponse });
-                
-                return botResponse;
-            } catch (error) {
-                console.error('Error with new API:', error);
-                
-                // Fallback to original API format
-                try {
-                    const fallbackResponse = await fallbackToOriginalAPI(prompt);
-                    return fallbackResponse;
-                } catch (fallbackError) {
-                    console.error('Fallback also failed:', fallbackError);
-                    throw new Error('Both API methods failed');
-                }
-            }
-        }
-
-        // Fallback function using original API format
-        async function fallbackToOriginalAPI(prompt) {
+            // Prepare conversation context
             const fullContext = conversationHistory.map(msg => 
                 `${msg.role === "user" ? "User" : "Assistant"}: ${msg.content}`
             ).join("\n") + "\nAssistant:";
 
-            const response = await fetch('https://api-inference.huggingface.co/models/microsoft/DialoGPT-large', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${HUGGING_FACE_API_KEY}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    inputs: fullContext,
-                    parameters: {
-                        max_new_tokens: 250,
-                        temperature: 0.7,
-                        top_p: 0.95,
-                        do_sample: true
-                    }
+            return new Promise((resolve, reject) => {
+                fetch('https://api-inference.huggingface.co/models/google/gemma-2-9b-it', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${HUGGING_FACE_API_KEY}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        inputs: fullContext,
+                        parameters: {
+                            max_new_tokens: 250,
+                            temperature: 0.7,
+                            top_p: 0.95
+                        }
+                    })
                 })
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    console.log('Response headers:', Object.fromEntries(response.headers));
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Response data:', data);
+                    let botResponse = "Sorry, I couldn't understand the response.";
+
+                    if (Array.isArray(data) && data.length > 0) {
+                        let responseText = data[0]?.generated_text || "";
+                        
+                        // Extract only the last response after "Assistant:"
+                        const parts = responseText.split(/User:|Assistant:/g);
+                        const cleanResponse = parts[parts.length - 1].trim();
+                        botResponse = cleanResponse || "Sorry, I couldn't understand the response.";
+                        
+                        // If no valid response found, use default message
+                        if (!botResponse) {
+                            botResponse = "Sorry, I couldn't understand the response.";
+                        }
+                    }
+
+                    console.log('Extracted Bot Response:', botResponse);
+                    resolve(botResponse);
+                })
+                .catch(error => {
+                    console.error('Error fetching API:', error);
+                    reject(error);
+                });
             });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            console.log('Fallback response data:', data);
-
-            let botResponse = "Sorry, I couldn't understand the response.";
-
-            if (Array.isArray(data) && data.length > 0) {
-                let responseText = data[0]?.generated_text || "";
-                const parts = responseText.split(/User:|Assistant:/g);
-                const cleanResponse = parts[parts.length - 1].trim();
-                botResponse = cleanResponse || "Sorry, I couldn't understand the response.";
-            }
-
-            return botResponse;
         }
 
         // Bot response logic
@@ -299,22 +277,32 @@
                 loadingElement.innerHTML = '<div class="animate-bounce">●</div><div class="animate-bounce delay-100">●</div><div class="animate-bounce delay-200">●</div>';
                 chatWindow.appendChild(loadingElement);
                 
-                addMessage(message, true);
+                addMessage(message, true);  // Add user message
                 
                 generateResponse(message)
                     .then(response => {
+                        // Remove loading indicator
                         loadingElement.remove();
+                        
                         console.log('Generated Response:', response);
-                        addMessage(response, false);
+                        const botResponse = response;
+                        
+                        // Add bot response to history
+                        conversationHistory.push({ role: "assistant", content: botResponse });
+                        
+                        // Display the response
+                        addMessage(botResponse, false);
+                        
+                        // Scroll to the latest message
                         chatWindow.scrollTop = chatWindow.scrollHeight;
                     })
                     .catch(error => {
                         console.error("Error generating response:", error);
                         loadingElement.remove();
-                        addMessage("Sorry, I encountered an issue generating the response. Please try again.", false);
+                        addMessage("Sorry, I encountered an issue generating the response.", false);
                     });
 
-                userInput.value = '';
+                userInput.value = '';       // Clear input field
             }
         }
 
@@ -333,6 +321,7 @@
                 return;
             }
             
+            // Check if SpeechRecognition is supported
             if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
                 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
                 const recognition = new SpeechRecognition();
@@ -341,8 +330,9 @@
                 recognition.interimResults = false;  
                 recognition.continuous = false;  
 
+                // Visual feedback for recording
                 voiceBtn.classList.add('animate-pulse');
-                voiceBtn.style.backgroundColor = '#f56565';
+                voiceBtn.style.backgroundColor = '#f56565'; // Red color to indicate recording
                 isRecognizing = true;
 
                 recognition.onstart = () => {
@@ -353,9 +343,10 @@
                 recognition.onerror = (event) => {
                     console.error("Speech recognition error:", event.error);
                     voiceBtn.classList.remove('animate-pulse');
-                    voiceBtn.style.backgroundColor = '';
+                    voiceBtn.style.backgroundColor = ''; // Reset color
                     isRecognizing = false;
                     
+                    // Show appropriate error message
                     if (event.error === 'network') {
                         showStatus("Network error. Check your internet connection.", true);
                     } else if (event.error === 'not-allowed' || event.error === 'permission-denied') {
@@ -367,7 +358,7 @@
 
                 recognition.onresult = (event) => {
                     voiceBtn.classList.remove('animate-pulse');
-                    voiceBtn.style.backgroundColor = '';
+                    voiceBtn.style.backgroundColor = ''; // Reset color
                     isRecognizing = false;
                     
                     if (event.results[0] && event.results[0].isFinal) {
@@ -378,16 +369,17 @@
 
                 recognition.onend = () => {
                     voiceBtn.classList.remove('animate-pulse');
-                    voiceBtn.style.backgroundColor = '';
+                    voiceBtn.style.backgroundColor = ''; // Reset color
                     isRecognizing = false;
                 };
 
+                // Start speech recognition
                 try {
                     recognition.start();
                 } catch (error) {
                     console.error("Failed to start speech recognition:", error);
                     voiceBtn.classList.remove('animate-pulse');
-                    voiceBtn.style.backgroundColor = '';
+                    voiceBtn.style.backgroundColor = ''; // Reset color
                     isRecognizing = false;
                     showStatus("Failed to start speech recognition. Try again later.", true);
                 }
@@ -396,7 +388,7 @@
             }
         });
         
-        // Toggle Bangla input mode
+        // Fallback method for Bangla input (manual typing with conversion)
         toggleBanglaBtn.addEventListener('click', () => {
             banglaInputMode = !banglaInputMode;
             
@@ -404,64 +396,103 @@
                 toggleBanglaBtn.classList.add('bg-purple-700');
                 toggleBanglaBtn.classList.remove('bg-purple-500');
                 showStatus("Bangla input mode activated. Type in phonetic Bangla.");
+                
+                // Enable jQuery Bangla on input field
                 $(userInput).bangla();
             } else {
                 toggleBanglaBtn.classList.remove('bg-purple-700');
                 toggleBanglaBtn.classList.add('bg-purple-500');
                 showStatus("English input mode activated.");
+                
+                // Disable jQuery Bangla on input field
                 $(userInput).unbind('.bangla');
             }
         });
 
-        // Bangla voice recognition
-        voiceBtnAlt.addEventListener('click', () => {
-            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                const recognition = new SpeechRecognition();
-                recognition.lang = 'bn-BD';
+        // Voice Recognition for Bangla - Green Button with improved error handling
+        // Define callback functions for Annyang
+const resultCallback = function(phrases) {
+  if (phrases.length > 0) {
+    userInput.value += phrases[0] + ' ';
+    showStatus("বাংলা টেক্সট সফলভাবে শনাক্ত হয়েছে!"); // "Bangla text successfully recognized!"
+    annyang.abort(); // Stop listening after recognition
+  }
+};
 
-                recognition.onstart = () => {
-                    console.log("Bangla recognition started");
-                    voiceBtnAlt.classList.add('animate-pulse');
-                    voiceBtnAlt.style.backgroundColor = '#f56565';
-                    isRecognizing = true;
-                    showStatus("বাংলায় শোনা হচ্ছে...");
-                };
+const errorCallback = function() {
+  showStatus("বাংলা স্পিচ রিকগনিশন সমস্যা।", true); // "Bangla speech recognition issue."
+  voiceBtnAlt.classList.remove('animate-pulse');
+  voiceBtnAlt.style.backgroundColor = ''; // Reset color
+  isRecognizing = false;
+};
 
-                recognition.onresult = (event) => {
-                    console.log("Recognized:", event.results[0][0].transcript);
-                    voiceBtnAlt.classList.remove('animate-pulse');
-                    voiceBtnAlt.style.backgroundColor = '';
-                    isRecognizing = false;
-                    userInput.value += event.results[0][0].transcript + ' ';
-                    showStatus("বাংলা টেক্সট সফলভাবে শনাক্ত হয়েছে!");
-                };
+const startCallback = function() {
+  voiceBtnAlt.classList.add('animate-pulse');
+  voiceBtnAlt.style.backgroundColor = '#f56565'; // Red color to indicate recording
+  isRecognizing = true;
+  showStatus("বাংলায় শোনা হচ্ছে..."); // "Listening in Bangla..."
+};
 
-                recognition.onerror = (event) => {
-                    console.error("Recognition error:", event.error);
-                    voiceBtnAlt.classList.remove('animate-pulse');
-                    voiceBtnAlt.style.backgroundColor = '';
-                    isRecognizing = false;
-                    showStatus(`সমস্যা: ${event.error}`, true);
-                };
+const endCallback = function() {
+  voiceBtnAlt.classList.remove('animate-pulse');
+  voiceBtnAlt.style.backgroundColor = ''; // Reset color
+  isRecognizing = false;
+  // Remove callbacks to prevent accumulation
+  annyang.removeCallback('result', resultCallback);
+  annyang.removeCallback('error', errorCallback);
+  annyang.removeCallback('start', startCallback);
+  annyang.removeCallback('end', endCallback);
+};
 
-                recognition.onend = () => {
-                    console.log("Recognition ended");
-                    voiceBtnAlt.classList.remove('animate-pulse');
-                    voiceBtnAlt.style.backgroundColor = '';
-                    isRecognizing = false;
-                };
+// Event listener for Bangla voice button
+voiceBtnAlt.addEventListener('click', () => {
+  if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'bn-BD'; // Bangla (Bangladesh)
 
-                try {
-                    recognition.start();
-                } catch (error) {
-                    console.error("Start error:", error);
-                    showStatus("রিকগনিশন শুরু করতে ব্যর্থ।", true);
-                }
-            } else {
-                showStatus("ব্রাউজার স্পিচ রিকগনিশন সমর্থন করে না।", true);
-            }
-        });
+    recognition.onstart = () => {
+      console.log("Bangla recognition started");
+      voiceBtnAlt.classList.add('animate-pulse');
+      voiceBtnAlt.style.backgroundColor = '#f56565';
+      isRecognizing = true;
+      showStatus("বাংলায় শোনা হচ্ছে...");
+    };
+
+    recognition.onresult = (event) => {
+      console.log("Recognized:", event.results[0][0].transcript);
+      voiceBtnAlt.classList.remove('animate-pulse');
+      voiceBtnAlt.style.backgroundColor = '';
+      isRecognizing = false;
+      userInput.value += event.results[0][0].transcript + ' ';
+      showStatus("বাংলা টেক্সট সফলভাবে শনাক্ত হয়েছে!");
+    };
+
+    recognition.onerror = (event) => {
+      console.error("Recognition error:", event.error);
+      voiceBtnAlt.classList.remove('animate-pulse');
+      voiceBtnAlt.style.backgroundColor = '';
+      isRecognizing = false;
+      showStatus(`সমস্যা: ${event.error}`, true);
+    };
+
+    recognition.onend = () => {
+      console.log("Recognition ended");
+      voiceBtnAlt.classList.remove('animate-pulse');
+      voiceBtnAlt.style.backgroundColor = '';
+      isRecognizing = false;
+    };
+
+    try {
+      recognition.start();
+    } catch (error) {
+      console.error("Start error:", error);
+      showStatus("রিকগনিশন শুরু করতে ব্যর্থ।", true);
+    }
+  } else {
+    showStatus("ব্রাউজার স্পিচ রিকগনিশন সমর্থন করে না।", true);
+  }
+});
         
         // Initialize the chat with a welcome message
         document.addEventListener('DOMContentLoaded', () => {
@@ -470,9 +501,6 @@
                 addMessage("স্বাগতম! আপনি ইংরেজিতে (নীল বাটন) বা বাংলায় (সবুজ বাটন) কথা বলতে পারেন, অথবা বেগুনি কীবোর্ড বাটন ব্যবহার করে বাংলা টাইপ করতে পারেন।", false);
             }, 500);
         });
-
-        // Make functions available globally for event listeners
-        window.sendMessage = sendMessage;
     </script>
 </body>
 </html>

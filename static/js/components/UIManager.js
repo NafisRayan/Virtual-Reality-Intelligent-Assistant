@@ -52,6 +52,12 @@ export class UIManager {
         this.menuMesh.rotation.y = -Math.PI / 12;
         scene.add(this.menuMesh);
 
+        // Create ECS entity for menu panel
+        this.menuEntity = world.createEntity();
+        this.menuEntity.addComponent(Object3D, { object: this.menuMesh });
+        this.menuEntity.addComponent(OffsetFromCamera, { x: 0.4, y: 0, z: -1 });
+        this.menuEntity.addComponent(NeedCalibration);
+
         // Create buttons
         this.createMenuButtons(world);
     }
@@ -219,13 +225,8 @@ export class UIManager {
             this.menuToggleButton.material.color.setHex(this.menuVisible ? 0x9932CC : 0xff0000);
 
             // Recalibrate menu position when showing
-            if (this.menuVisible) {
-                const menuEntity = world.getEntities().find(e => 
-                    e.hasComponent(Object3D) && e.getComponent(Object3D).object === this.menuMesh
-                );
-                if (menuEntity) {
-                    menuEntity.addComponent(NeedCalibration);
-                }
+            if (this.menuVisible && this.menuEntity) {
+                this.menuEntity.addComponent(NeedCalibration);
             }
         };
 

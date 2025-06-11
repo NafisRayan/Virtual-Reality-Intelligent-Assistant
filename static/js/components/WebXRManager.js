@@ -83,7 +83,7 @@ export class WebXRManager {
     }
 
     createInstructionText(scene) {
-        const instructionText = createText('This is a WebXR Hands demo, please explore with hands.', 0.04);
+        const instructionText = createText('', 0.04);
         instructionText.material.opacity = 1;
         instructionText.material.transparent = true;
         instructionText.position.set(0, 1.6, -0.6);

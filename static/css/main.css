@@ -1,0 +1,124 @@
+/* Main styles for the 3D WebXR application */
+body {
+    margin: 0;
+    overflow: hidden;
+}
+
+.video-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.video-background img {
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: cover;
+}
+
+.map-container {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 1.75rem;
+    width: 20%;
+    height: 25%;
+    border-radius: 1rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    transform: scale(1);
+    transition: transform 0.5s ease;
+}
+
+.map-container:hover {
+    transform: scale(1.05);
+}
+
+.map-container iframe {
+    width: 100%;
+    height: 100%;
+    border-radius: 1rem;
+}
+
+.chat-container {
+    position: absolute;
+    bottom: 2.5rem;
+    right: 1.75rem;
+    width: 20%;
+    height: 50%;
+    border-radius: 1rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    transform: scale(1);
+    transition: transform 0.5s ease;
+}
+
+.chat-container:hover {
+    transform: scale(1.05);
+}
+
+.chat-container iframe {
+    width: 100%;
+    height: 100%;
+    border-radius: 1rem;
+}
+
+.info-panel {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    padding: 1rem;
+    text-align: center;
+    color: white;
+    pointer-events: none;
+}
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    padding: 0.5rem;
+    border-radius: 0 0 0.5rem 0.5rem;
+    border: 1px solid rgba(229, 231, 235, 1);
+}
+
+.navbar .brand {
+    font-size: 1.125rem;
+    font-weight: bold;
+}
+
+.navbar .datetime {
+    font-size: 0.875rem;
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive design */
+@media (min-width: 768px) {
+    .map-container {
+        width: 25%;
+        height: 33.333333%;
+    }
+    
+    .chat-container {
+        width: 25%;
+        height: 50%;
+    }
+}

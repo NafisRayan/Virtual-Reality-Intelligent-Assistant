@@ -7,6 +7,7 @@ import datetime
 import numpy as np
 import random
 from concurrent.futures import ThreadPoolExecutor
+import json
 
 app = Flask(__name__, static_url_path='/static')
 
@@ -44,14 +45,34 @@ cap.set(4, 720)   # CV_CAP_PROP_FRAME_HEIGHT
 
 def log_detection(detected_objects):
     try:
-        with open("detected_objects.txt", "a") as f:
-            now = datetime.datetime.now()
-            current_time = now.strftime("%Y-%m-%d %H:%M:%S")
-            for obj in detected_objects:
-                name, coords, _ = obj
-                x1, y1, x2, y2 = coords
-                log_string = f"{current_time} - Object: {name}, Coordinates: ({x1}, {y1}, {x2}, {y2})\n"
-                f.write(log_string)
+        # Load existing data from the JSON file if it exists
+        try:
+            with open("detected_objects.json", "r") as f:
+                existing_data = json.load(f)
+        except FileNotFoundError:
+            existing_data = []
+
+        now = datetime.datetime.now()
+        current_time = now.strftime("%Y-%m-%d %H:%M:%S")
+        
+        # Prepare the data to be written
+        new_data = []
+        for obj in detected_objects:
+            name, coords, _ = obj
+            x1, y1, x2, y2 = coords
+            new_data.append({
+                "time": current_time,
+                "object": name,
+                "coordinates": ((x1+x2)/2, (y1+y2)/2)
+            })
+        
+        # Append the new data to the existing data
+        existing_data.extend(new_data)
+
+        # Write the combined data to the JSON file
+        with open("detected_objects.json", "w") as f:
+            json.dump(existing_data, f, indent=4)
+
     except Exception as e:
         print(f"Error writing to file: {e}")
 

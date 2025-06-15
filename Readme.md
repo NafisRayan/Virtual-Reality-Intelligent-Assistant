@@ -8,6 +8,7 @@ This project is a web-based application that integrates Three.js for 3D renderin
 - **VR Hand Input**: Utilizes WebXR for hand tracking and interaction.
 - **Voice Chat with AI**: Integrated speech recognition with AI responses via Hugging Face API.
 - **Object Detection**: Integrates YOLO for real-time object detection in video feeds.
+- **Voice Chat with AI**: Integrated speech recognition with AI responses via Hugging Face Google Gemma 2-9B model.
 - **Flask Backend**: Serves the application and handles video processing.
 - **Interactive UI**: Includes a map and chat system embedded in iframes.
 - **Modular Architecture**: Clean, maintainable code structure with separated components.
@@ -57,6 +58,7 @@ For detailed information about the modular architecture, see [MODULARIZATION_GUI
 - Flask
 - OpenCV
 - Ultralytics YOLO
+- Node.js and npm (for Three.js and other frontend dependencies)
 - Modern web browser with WebXR support
 
 ## Installation
@@ -79,7 +81,7 @@ For detailed information about the modular architecture, see [MODULARIZATION_GUI
    ```
 
 4. **Download the YOLO model**:
-   - Ensure you have the YOLO model file (`yolo11n.pt`) in the project directory or update the path in `app.py`.
+   - The YOLO model file (`yolo11n.pt`) should be placed in the project directory. You can download it from [link to model].
 
 ## Usage
 
@@ -134,7 +136,7 @@ For detailed information about the modular architecture, see [MODULARIZATION_GUI
 
 - **Video Source**: The video source is set to `video.mp4` in `app.py`. Change this to `0` for the default camera or another video file.
 - **Model Path**: Update the YOLO model path in `app.py` if necessary.
-- **AI API Key**: Update the Hugging Face API key in `VoiceChatSystem.js` for voice chat functionality.
+- **AI API Key**: Update the Hugging Face API key in `templates/index.html` as described in [`VOICE_CHAT_SETUP.md`](VOICE_CHAT_SETUP.md) for voice chat functionality.
 - **Template Selection**: Choose between `index.html` (original) or `index_modular.html` (recommended) in `app.py`.
 
 ## Development
@@ -160,7 +162,10 @@ For detailed information about the modular architecture, see [MODULARIZATION_GUI
 - Check the browser console for any JavaScript errors.
 - Verify the paths to assets and models are correct.
 - For WebXR issues, ensure you're using a compatible browser and device.
-- For voice chat issues, check microphone permissions and browser compatibility.
+- For voice chat issues:
+  - Check microphone permissions and browser compatibility.
+  - Ensure the Hugging Face API key is correctly configured in `templates/index.html`.
+  - Verify that the necessary audio permissions are granted in the browser.
 
 ### Common Issues
 

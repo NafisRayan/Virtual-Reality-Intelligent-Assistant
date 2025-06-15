@@ -42,10 +42,26 @@ cap = cv2.VideoCapture('video.mp4')  # 0 for the default camera
 cap.set(3, 1280)  # CV_CAP_PROP_FRAME_WIDTH
 cap.set(4, 720)   # CV_CAP_PROP_FRAME_HEIGHT
 
+def log_detection(detected_objects):
+    try:
+        with open("detected_objects.txt", "a") as f:
+            now = datetime.datetime.now()
+            current_time = now.strftime("%Y-%m-%d %H:%M:%S")
+            for obj in detected_objects:
+                name, coords, _ = obj
+                x1, y1, x2, y2 = coords
+                log_string = f"{current_time} - Object: {name}, Coordinates: ({x1}, {y1}, {x2}, {y2})\n"
+                f.write(log_string)
+    except Exception as e:
+        print(f"Error writing to file: {e}")
+
 def process_frame(frame):
+    # Initialize an empty list to store detected objects
+    detected_objects = []
+
     # Process the frame with YOLO
     results = model(frame)
-    
+
     # Draw results (adjust as needed)
     for r in results:
         boxes = r.boxes
@@ -58,6 +74,16 @@ def process_frame(frame):
             conf = math.ceil((box.conf[0] * 100)) / 100
             cls = int(box.cls[0])
             name = classNames[cls]
+            
+            # Get current time
+            now = datetime.datetime.now()
+            current_time = now.strftime("%H:%M:%S")
+
+            # Create a tuple with class, coordinates, and time
+            object_data = (name, (x1, y1, x2, y2), current_time)
+            
+            # Append the tuple to the list of detected objects
+            detected_objects.append(object_data)
 
             # Generate colors based on confidence
             color_intensity = int(conf * 255)
@@ -94,30 +120,35 @@ def process_frame(frame):
 
             frame = cv2.addWeighted(overlay, Opacity, frame, 1 - Opacity, 0)  # overlaying on the image.
 
-    return frame
+    log_detection(detected_objects)
+    return frame, detected_objects
 
 def gen_frames():
     with ThreadPoolExecutor() as executor:
+        detected_objects = []
         while True:
             success, frame = cap.read()  # Read the camera frame
             if not success:
                 break
-
             # Draw status bar with curved underline
             # time_str = datetime.datetime.now().strftime('%H:%M:%S')
             # date_str = datetime.datetime.now().strftime('%Y-%m-%d')
             # status_bar = f'Time: {time_str} | Date: {date_str} | Weather: Sunny, 29c'
-            # text_size = cv2.getTextSize(status_bar, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)[0]
-            # image_height, image_width, _ = frame.shape
+            # Prepare status bar information
+            time_str = datetime.datetime.now().strftime('%H:%M:%S')
+            date_str = datetime.datetime.now().strftime('%Y-%m-%d')
+            status_bar = f'Time: {time_str} | Date: {date_str} | Objects: {detected_objects}'
+            text_size = cv2.getTextSize(status_bar, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)[0]
+            image_height, image_width, _ = frame.shape
             
-            # # Draw the curved line
-            # cv2.ellipse(frame, (image_width // 2, status_bar_height - curvature), (image_width // 2, curvature), 0, 0, 180, (255, 255, 255), 1)
+            # Draw the curved line
+            cv2.ellipse(frame, (image_width // 2, status_bar_height - curvature), (image_width // 2, curvature), 0, 0, 180, (255, 255, 255), 1)
             
-            # # Draw the status bar text
-            # cv2.putText(frame, status_bar, ((image_width - text_size[0]) // 2, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+            # Draw the status bar text
+            cv2.putText(frame, status_bar, ((image_width - text_size[0]) // 2, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
 
             # Process the frame asynchronously
-            frame = executor.submit(process_frame, frame).result()
+            frame, detected_objects = executor.submit(process_frame, frame).result()
 
             _, buffer = cv2.imencode('.jpg', frame)
             frame = buffer.tobytes()

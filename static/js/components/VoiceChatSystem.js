@@ -4,6 +4,43 @@ import { InferenceClient } from 'https://cdn.skypack.dev/@huggingface/inference'
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 
 export class VoiceChatSystem {
+    constructor(apiKey) {
+        this.voiceChatScreen = null;
+        this.voiceChatVisible = false;
+        this.chatMessages = [];
+        this.isListening = false;
+        this.isBanglaListening = false;
+        this.isDetectedObjectMode = false;
+        this.recognition = null;
+        this.banglaRecognition = null;
+        this.client = new InferenceClient("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");
+        this.controllers = [];
+        this.raycaster = new THREE.Raycaster();
+        this.intersected = null;
+        this.isMicActive = false;
+        this.camera = null;
+        this.detectedObjectsPrompt = '';
+    }
+
+    setCamera(camera) {
+        this.camera = camera;
+    }
+
+    init(scene, renderer, controllers = []) {
+        if (renderer) {
+            this.renderer = renderer;
+        } else if (!this.renderer) {
+            console.error('Renderer is undefined in VoiceChatSystem.init and not set via setRenderer()');
+        }
+
+        this.initVoiceRecognition();
+        this.voiceChatScreen = this.createVoiceChatScreen();
+        scene.add(this.voiceChatScreen);
+        this.controllers = controllers;
+        this.setupEventListeners();
+        return this.voiceChatScreen;
+    }
+
     initVoiceRecognition() {
         if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -27,6 +64,11 @@ export class VoiceChatSystem {
                 this.isListening = false;
                 this.updateVoiceButtonState();
                 console.log('English voice recognition ended');
+                if (this.isDetectedObjectMode) {
+                    this.isDetectedObjectMode = false;
+                    this.detectedObjectsPrompt = '';
+                    this.addChatMessage('Detected object mode stopped.', false);
+                }
             };
 
             this.recognition.onerror = (event) => {
@@ -49,6 +91,10 @@ export class VoiceChatSystem {
                         errorMessage += event.error;
                 }
                 this.addChatMessage(errorMessage, false);
+                if (this.isDetectedObjectMode) {
+                    this.isDetectedObjectMode = false;
+                    this.detectedObjectsPrompt = '';
+                }
             };
 
             this.recognition.onresult = (event) => {
@@ -116,39 +162,142 @@ export class VoiceChatSystem {
         }
     }
 
-    constructor(apiKey) {
-        this.voiceChatScreen = null;
-        this.voiceChatVisible = false;
-        this.chatMessages = [];
-        this.isListening = false;
-        this.isBanglaListening = false;
-        this.recognition = null;
-        this.banglaRecognition = null;
-        this.client = new InferenceClient("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");
-        this.controllers = [];
-        this.raycaster = new THREE.Raycaster();
-        this.intersected = null;
-        this.isMicActive = false;
-        this.camera = null;
-    }
 
-    setCamera(camera) {
-        this.camera = camera;
-    }
-
-    init(scene, renderer, controllers = []) {
-        if (renderer) {
-            this.renderer = renderer;
-        } else if (!this.renderer) {
-            console.error('Renderer is undefined in VoiceChatSystem.init and not set via setRenderer()');
+async fetchDetectedObjects() {
+    try {
+        console.log('Fetching detected objects...');
+        
+        // Add timeout to prevent hanging requests
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+        
+        // Try to fetch the JSON endpoint first (which converts txt to JSON)
+        const response = await fetch('/detected_objects.json', {
+            signal: controller.signal,
+            cache: 'no-cache',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        clearTimeout(timeoutId);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
         }
+        
+        // Get the response text first to debug
+        const responseText = await response.text();
+        console.log('Response length:', responseText.length);
+        console.log('Response preview (first 200 chars):', responseText.substring(0, 200));
+        
+        // Check if response is empty
+        if (!responseText || responseText.trim() === '') {
+            console.log('Empty response received');
+            return 'No detected objects found - file is empty.';
+        }
+        
+        // Try to parse the JSON
+        let data;
+        try {
+            data = JSON.parse(responseText);
+        } catch (parseError) {
+            console.error('JSON parsing error:', parseError);
+            console.error('Response text that failed to parse:', responseText);
+            return 'Error: Invalid JSON format in detected objects response.';
+        }
+        
+        // Validate that we have an array with data
+        if (!Array.isArray(data)) {
+            console.error('Data is not an array:', typeof data, data);
+            return 'Error: Expected array format in detected objects response.';
+        }
+        
+        if (data.length === 0) {
+            return 'No detected objects found.';
+        }
+        
+        console.log(`Successfully parsed ${data.length} detected objects`);
+        
+        // Group objects by time to get latest detections
+        const recentObjects = this.getRecentDetections(data, 10); // Get last 10 unique objects
+        
+        // Format the detected objects into a readable string
+        const objectsList = recentObjects.map((item, index) => {
+            let coords = 'N/A';
+            if (item.coordinates && Array.isArray(item.coordinates) && item.coordinates.length >= 2) {
+                coords = `(${item.coordinates[0].toFixed(1)}, ${item.coordinates[1].toFixed(1)})`;
+            }
+            
+            return `${index + 1}. ${item.object || 'Unknown'} at ${coords} - ${item.time || 'Unknown time'}`;
+        }).join('; ');
+        
+        return `Found ${data.length} total detections. Recent objects: ${objectsList}`;
+        
+    } catch (error) {
+        console.error('Error fetching detected objects:', error);
+        
+        if (error.name === 'AbortError') {
+            return 'Error: Request timed out while fetching detected objects. Please try again.';
+        } else if (error.message.includes('Failed to fetch')) {
+            return 'Error: Network error while fetching detected objects. Please check your connection.';
+        } else {
+            return `Error fetching detected objects: ${error.message}. Please try again.`;
+        }
+    }
+}
 
-        this.initVoiceRecognition();
-        this.voiceChatScreen = this.createVoiceChatScreen();
-        scene.add(this.voiceChatScreen);
-        this.controllers = controllers;
-        this.setupEventListeners();
-        return this.voiceChatScreen;
+// Helper method to get recent unique detections
+getRecentDetections(data, maxCount = 10) {
+    // Sort by time (most recent first)
+    const sortedData = data.sort((a, b) => {
+        const timeA = new Date(a.time || 0);
+        const timeB = new Date(b.time || 0);
+        return timeB - timeA;
+    });
+    
+    // Get unique objects (latest occurrence of each object type)
+    const uniqueObjects = new Map();
+    
+    for (const item of sortedData) {
+        const key = item.object;
+        if (!uniqueObjects.has(key)) {
+            uniqueObjects.set(key, item);
+        }
+        
+        if (uniqueObjects.size >= maxCount) {
+            break;
+        }
+    }
+    
+    return Array.from(uniqueObjects.values());
+}
+
+    async toggleDetectedObjectMode() {
+        if (this.recognition) {
+            if (!this.isListening && !this.isDetectedObjectMode) {
+                try {
+                    this.detectedObjectsPrompt = await this.fetchDetectedObjects();
+                    this.addChatMessage(`Detected object mode activated. ${this.detectedObjectsPrompt}`, false, true);
+                    this.isDetectedObjectMode = true;
+                    this.recognition.start();
+                    this.addChatMessage('🎤 Listening for object-related input... Speak now!', false, true);
+                } catch (error) {
+                    console.error('Failed to start detected object mode:', error);
+                    this.addChatMessage('Failed to start detected object mode. Please check microphone permissions or server availability.', false);
+                    this.isDetectedObjectMode = false;
+                    this.detectedObjectsPrompt = '';
+                }
+            } else {
+                this.recognition.stop();
+                this.addChatMessage('🎤 Stopped listening for object-related input.', false);
+                this.isDetectedObjectMode = false;
+                this.detectedObjectsPrompt = '';
+            }
+        } else {
+            this.addChatMessage('Voice recognition not available. Please check browser compatibility.', false);
+        }
     }
 
     createVoiceChatScreen() {
@@ -178,7 +327,7 @@ export class VoiceChatSystem {
         const voiceButtonText = createText('🎤 Voice', 0.04);
         voiceButtonText.position.set(0, 0, 0.011);
         voiceButton.add(voiceButtonText);
-        voiceButton.position.set(-0.5, -0.6, 0.02);
+        voiceButton.position.set(-0.75, -0.6, 0.02);
         voiceButton.userData = { 
             isButton: true, 
             action: () => this.toggleVoiceRecognition() 
@@ -190,7 +339,7 @@ export class VoiceChatSystem {
         const micButtonText = createText('🔊 AI Speak', 0.04);
         micButtonText.position.set(0, 0, 0.011);
         micButton.add(micButtonText);
-        micButton.position.set(0, -0.6, 0.02);
+        micButton.position.set(-0.25, -0.6, 0.02);
         micButton.userData = { 
             isButton: true, 
             action: () => this.toggleMic() 
@@ -202,12 +351,24 @@ export class VoiceChatSystem {
         const banglaButtonText = createText('🇧🇩 Bangla Voice', 0.04);
         banglaButtonText.position.set(0, 0, 0.011);
         banglaButton.add(banglaButtonText);
-        banglaButton.position.set(0.5, -0.6, 0.02);
+        banglaButton.position.set(0.25, -0.6, 0.02);
         banglaButton.userData = { 
             isButton: true, 
             action: () => this.toggleBanglaVoiceRecognition() 
         };
         screenGroup.add(banglaButton);
+
+        // Detected Object button
+        const detectedObjectButton = this.makeButtonMesh(0.3, 0.1, 0.02, 0xffff44);
+        const detectedObjectButtonText = createText('🔍 Detected Object', 0.04);
+        detectedObjectButtonText.position.set(0, 0, 0.011);
+        detectedObjectButton.add(detectedObjectButtonText);
+        detectedObjectButton.position.set(0.75, -0.6, 0.02);
+        detectedObjectButton.userData = { 
+            isButton: true, 
+            action: () => this.toggleDetectedObjectMode()
+        };
+        screenGroup.add(detectedObjectButton);
 
         screenGroup.name = 'voiceChatScreen';
         screenGroup.position.set(0, 0, -3);
@@ -221,6 +382,8 @@ export class VoiceChatSystem {
             micButtonText,
             banglaButton,
             banglaButtonText,
+            detectedObjectButton,
+            detectedObjectButtonText,
             messages: []
         };
 
@@ -260,7 +423,8 @@ export class VoiceChatSystem {
             const buttons = [
                 this.voiceChatScreen.userData.voiceButton,
                 this.voiceChatScreen.userData.micButton,
-                this.voiceChatScreen.userData.banglaButton
+                this.voiceChatScreen.userData.banglaButton,
+                this.voiceChatScreen.userData.detectedObjectButton
             ];
             const intersects = this.raycaster.intersectObjects(buttons, true);
             console.log('Mouse click intersects:', intersects.length);
@@ -299,7 +463,8 @@ export class VoiceChatSystem {
         const buttons = [
             this.voiceChatScreen.userData.voiceButton,
             this.voiceChatScreen.userData.micButton,
-            this.voiceChatScreen.userData.banglaButton
+            this.voiceChatScreen.userData.banglaButton,
+            this.voiceChatScreen.userData.detectedObjectButton
         ];
         const intersects = this.raycaster.intersectObjects(buttons, true);
         console.log(`Controller ${index} intersects:`, intersects.length);
@@ -395,15 +560,22 @@ export class VoiceChatSystem {
         try {
             this.addChatMessage('AI is thinking...', false, true);
 
+            const messages = [];
+            if (this.isDetectedObjectMode && this.detectedObjectsPrompt) {
+                messages.push({
+                    role: 'system',
+                    content: `You are assisting with questions related to detected objects. Here is the context: ${this.detectedObjectsPrompt}. Please respond to the user's query in this context.`
+                });
+            }
+            messages.push({
+                role: 'user',
+                content: userMessage
+            });
+
             const chatCompletion = await this.client.chatCompletion({
                 provider: "nebius",
                 model: "google/gemma-2-9b-it",
-                messages: [
-                    {
-                        role: "user",
-                        content: userMessage
-                    }
-                ]
+                messages
             });
 
             const aiResponse = chatCompletion?.choices?.[0]?.message?.content?.trim() || "Sorry, I could not generate a response.";
@@ -509,13 +681,16 @@ export class VoiceChatSystem {
             this.voiceChatScreen.visible = this.voiceChatVisible;
             if (this.voiceChatVisible) {
                 this.updateChatDisplay();
-                this.addChatMessage('Voice chat activated! Click Voice button for English or Bangla Voice for Bangla.', false);
+                this.addChatMessage('Voice chat activated! Click Voice button for English, Bangla Voice for Bangla, or Detected Object for object-related queries.', false);
             } else {
                 if (this.isListening) {
                     this.toggleVoiceRecognition();
                 }
                 if (this.isBanglaListening) {
                     this.toggleBanglaVoiceRecognition();
+                }
+                if (this.isDetectedObjectMode) {
+                    this.toggleDetectedObjectMode();
                 }
             }
         }

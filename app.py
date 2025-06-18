@@ -44,37 +44,91 @@ cap.set(3, 1280)  # CV_CAP_PROP_FRAME_WIDTH
 cap.set(4, 720)   # CV_CAP_PROP_FRAME_HEIGHT
 
 def log_detection(detected_objects):
+    """Log detected objects to a text file with a readable format"""
     try:
-        # Load existing data from the JSON file if it exists
-        try:
-            with open("detected_objects.json", "r") as f:
-                existing_data = json.load(f)
-        except FileNotFoundError:
-            existing_data = []
-
+        if not detected_objects:  # Skip if no objects detected
+            return
+            
         now = datetime.datetime.now()
         current_time = now.strftime("%Y-%m-%d %H:%M:%S")
         
-        # Prepare the data to be written
-        new_data = []
-        for obj in detected_objects:
-            name, coords, _ = obj
-            x1, y1, x2, y2 = coords
-            new_data.append({
-                "time": current_time,
-                "object": name,
-                "coordinates": ((x1+x2)/2, (y1+y2)/2)
-            })
-        
-        # Append the new data to the existing data
-        existing_data.extend(new_data)
-
-        # Write the combined data to the JSON file
-        with open("detected_objects.json", "w") as f:
-            json.dump(existing_data, f, indent=4)
+        # Open file in append mode
+        with open("detected_objects.txt", "a", encoding="utf-8") as f:
+            # Write a timestamp header for this detection batch
+            f.write(f"\n=== Detection Log - {current_time} ===\n")
+            
+            for i, obj in enumerate(detected_objects, 1):
+                name, coords, detection_time = obj
+                x1, y1, x2, y2 = coords
+                center_x = (x1 + x2) / 2
+                center_y = (y1 + y2) / 2
+                
+                # Write object information in a readable format
+                f.write(f"{i:2d}. Object: {name:<15} | "
+                       f"Position: ({center_x:6.1f}, {center_y:6.1f}) | "
+                       f"Bounding Box: ({x1}, {y1}) to ({x2}, {y2}) | "
+                       f"Time: {detection_time}\n")
+            
+            f.write(f"--- Total objects detected: {len(detected_objects)} ---\n")
 
     except Exception as e:
         print(f"Error writing to file: {e}")
+
+def read_detected_objects_from_txt():
+    """Read detected objects from txt file and convert to JSON format for the API"""
+    try:
+        if not os.path.exists("detected_objects.txt"):
+            return []
+        
+        objects_list = []
+        current_batch_time = None
+        
+        with open("detected_objects.txt", "r", encoding="utf-8") as f:
+            lines = f.readlines()
+        
+        for line in lines:
+            line = line.strip()
+            
+            # Check for timestamp headers
+            if line.startswith("=== Detection Log -") and line.endswith("==="):
+                # Extract timestamp from header
+                timestamp_part = line.replace("=== Detection Log - ", "").replace(" ===", "")
+                current_batch_time = timestamp_part
+                continue
+            
+            # Parse object lines (format: "1. Object: car | Position: (500.5, 305.5) | ...")
+            if line and line[0].isdigit() and ". Object:" in line:
+                try:
+                    # Split the line into parts
+                    parts = line.split(" | ")
+                    
+                    # Extract object name
+                    object_part = parts[0].split("Object: ")[1].strip()
+                    
+                    # Extract position coordinates
+                    position_part = parts[1].split("Position: ")[1]
+                    # Remove parentheses and split coordinates
+                    coords_str = position_part.replace("(", "").replace(")", "")
+                    x, y = map(float, coords_str.split(", "))
+                    
+                    # Create object entry
+                    obj_entry = {
+                        "time": current_batch_time or "Unknown",
+                        "object": object_part,
+                        "coordinates": [x, y]
+                    }
+                    
+                    objects_list.append(obj_entry)
+                    
+                except (IndexError, ValueError) as e:
+                    print(f"Error parsing line: {line} - {e}")
+                    continue
+        
+        return objects_list
+        
+    except Exception as e:
+        print(f"Error reading detected objects file: {e}")
+        return []
 
 def process_frame(frame):
     # Initialize an empty list to store detected objects
@@ -158,7 +212,7 @@ def gen_frames():
             # Prepare status bar information
             time_str = datetime.datetime.now().strftime('%H:%M:%S')
             date_str = datetime.datetime.now().strftime('%Y-%m-%d')
-            status_bar = f'Time: {time_str} | Date: {date_str} | Objects: {detected_objects}'
+            status_bar = f'Time: {time_str} | Date: {date_str} | Objects: {len(detected_objects) if detected_objects else 0}'
             text_size = cv2.getTextSize(status_bar, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)[0]
             image_height, image_width, _ = frame.shape
             
@@ -198,6 +252,49 @@ def serve_assets(path):
     else:
         return send_file(os.path.join('assets', path), mimetype='application/octet-stream')
 
+@app.route('/detected_objects.json')
+def get_detected_objects():
+    """Serve the detected objects as JSON (converted from txt file)"""
+    try:
+        objects_list = read_detected_objects_from_txt()
+        return json.dumps(objects_list), 200, {'Content-Type': 'application/json'}
+    except Exception as e:
+        print(f"Error serving detected objects: {e}")
+        return json.dumps([]), 500, {'Content-Type': 'application/json'}
+
+@app.route('/detected_objects.txt')
+def get_detected_objects_txt():
+    """Serve the raw txt file"""
+    try:
+        return send_file('detected_objects.txt', mimetype='text/plain')
+    except FileNotFoundError:
+        return "No detected objects file found", 404
+
+# Alternative: If you want to serve all files from root
+@app.route('/<path:filename>')
+def serve_root_files(filename):
+    """Serve files from the root directory"""
+    if filename.endswith('.json'):
+        try:
+            return send_file(filename, mimetype='application/json')
+        except FileNotFoundError:
+            return json.dumps([]), 404, {'Content-Type': 'application/json'}
+    elif filename.endswith('.txt'):
+        try:
+            return send_file(filename, mimetype='text/plain')
+        except FileNotFoundError:
+            return "File not found", 404
+    # For other file types, you can add more conditions or return 404
+    return "File not found", 404
+
 if __name__ == '__main__':
+    # Create initial log file with header if it doesn't exist
+    if not os.path.exists("detected_objects.txt"):
+        with open("detected_objects.txt", "w", encoding="utf-8") as f:
+            f.write("YOLO Object Detection Log\n")
+            f.write("=" * 50 + "\n")
+            f.write(f"Log started: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+            f.write("=" * 50 + "\n")
+    
     app.run(host='0.0.0.0', port=5000, debug=True)
     # app.run(host='0.0.0.0')

@@ -348,7 +348,7 @@ getRecentDetections(data, maxCount = 10) {
 
         // Bangla voice button
         const banglaButton = this.makeButtonMesh(0.3, 0.1, 0.02, 0x44ff44);
-        const banglaButtonText = createText('🇧🇩 Bangla Voice', 0.04);
+        const banglaButtonText = createText('🎤 Bangla', 0.04);
         banglaButtonText.position.set(0, 0, 0.011);
         banglaButton.add(banglaButtonText);
         banglaButton.position.set(0.25, -0.6, 0.02);
@@ -360,7 +360,7 @@ getRecentDetections(data, maxCount = 10) {
 
         // Detected Object button
         const detectedObjectButton = this.makeButtonMesh(0.3, 0.1, 0.02, 0xffff44);
-        const detectedObjectButtonText = createText('🔍 Detected Object', 0.04);
+        const detectedObjectButtonText = createText('🔍 Vision', 0.04);
         detectedObjectButtonText.position.set(0, 0, 0.011);
         detectedObjectButton.add(detectedObjectButtonText);
         detectedObjectButton.position.set(0.75, -0.6, 0.02);
@@ -541,7 +541,7 @@ getRecentDetections(data, maxCount = 10) {
     updateBanglaButtonState() {
         if (this.voiceChatScreen && this.voiceChatScreen.userData.banglaButtonText) {
             const buttonText = this.voiceChatScreen.userData.banglaButtonText;
-            buttonText.text = this.isBanglaListening ? '🔴 শোনা হচ্ছে (বাং)...' : '🇧🇩 Bangla Voice';
+            buttonText.text = this.isBanglaListening ? '🔴 শোনা হচ্ছে (বাং)...' : 'Bangla Voice';
             const button = this.voiceChatScreen.userData.banglaButton;
             button.material.color.setHex(this.isBanglaListening ? 0x00ff00 : 0x44ff44);
         }

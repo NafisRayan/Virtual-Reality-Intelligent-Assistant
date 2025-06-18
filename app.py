@@ -216,11 +216,11 @@ def gen_frames():
             text_size = cv2.getTextSize(status_bar, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)[0]
             image_height, image_width, _ = frame.shape
             
-            # Draw the curved line
-            cv2.ellipse(frame, (image_width // 2, status_bar_height - curvature), (image_width // 2, curvature), 0, 0, 180, (255, 255, 255), 1)
+            # # Draw the curved line
+            # cv2.ellipse(frame, (image_width // 2, status_bar_height - curvature), (image_width // 2, curvature), 0, 0, 180, (255, 255, 255), 1)
             
-            # Draw the status bar text
-            cv2.putText(frame, status_bar, ((image_width - text_size[0]) // 2, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+            # # Draw the status bar text
+            # cv2.putText(frame, status_bar, ((image_width - text_size[0]) // 2, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
 
             # Process the frame asynchronously
             frame, detected_objects = executor.submit(process_frame, frame).result()

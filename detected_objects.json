@@ -1,0 +1,3218 @@
+[
+    {
+        "time": "2025-06-16 03:23:54",
+        "object": "car",
+        "coordinates": [
+            500.5,
+            305.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:23:54",
+        "object": "car",
+        "coordinates": [
+            817.5,
+            312.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:23:54",
+        "object": "car",
+        "coordinates": [
+            115.0,
+            318.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:23:54",
+        "object": "person",
+        "coordinates": [
+            754.0,
+            333.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:23:55",
+        "object": "car",
+        "coordinates": [
+            502.0,
+            305.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:23:55",
+        "object": "car",
+        "coordinates": [
+            818.0,
+            312.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:23:55",
+        "object": "car",
+        "coordinates": [
+            114.0,
+            319.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:23:55",
+        "object": "person",
+        "coordinates": [
+            218.0,
+            318.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:23:55",
+        "object": "person",
+        "coordinates": [
+            754.0,
+            331.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:23:55",
+        "object": "person",
+        "coordinates": [
+            279.0,
+            311.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:23:56",
+        "object": "car",
+        "coordinates": [
+            503.5,
+            305.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:23:56",
+        "object": "car",
+        "coordinates": [
+            822.0,
+            313.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:23:56",
+        "object": "car",
+        "coordinates": [
+            115.5,
+            323.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:23:56",
+        "object": "person",
+        "coordinates": [
+            758.5,
+            333.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:23:57",
+        "object": "car",
+        "coordinates": [
+            504.5,
+            306.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:23:57",
+        "object": "car",
+        "coordinates": [
+            825.5,
+            313.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:23:57",
+        "object": "car",
+        "coordinates": [
+            117.5,
+            316.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:23:57",
+        "object": "person",
+        "coordinates": [
+            759.5,
+            337.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:23:57",
+        "object": "car",
+        "coordinates": [
+            827.5,
+            313.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:23:57",
+        "object": "car",
+        "coordinates": [
+            505.5,
+            306.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:23:57",
+        "object": "car",
+        "coordinates": [
+            118.5,
+            315.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:23:58",
+        "object": "car",
+        "coordinates": [
+            830.0,
+            313.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:23:58",
+        "object": "car",
+        "coordinates": [
+            507.5,
+            305.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:23:58",
+        "object": "car",
+        "coordinates": [
+            119.5,
+            315.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:23:58",
+        "object": "person",
+        "coordinates": [
+            763.5,
+            344.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:23:59",
+        "object": "car",
+        "coordinates": [
+            836.0,
+            312.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:23:59",
+        "object": "car",
+        "coordinates": [
+            511.5,
+            305.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:23:59",
+        "object": "car",
+        "coordinates": [
+            124.5,
+            315.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:23:59",
+        "object": "car",
+        "coordinates": [
+            840.0,
+            313.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:23:59",
+        "object": "car",
+        "coordinates": [
+            513.5,
+            306.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:23:59",
+        "object": "car",
+        "coordinates": [
+            125.0,
+            315.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:00",
+        "object": "car",
+        "coordinates": [
+            843.5,
+            313.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:00",
+        "object": "car",
+        "coordinates": [
+            516.5,
+            305.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:00",
+        "object": "car",
+        "coordinates": [
+            127.0,
+            315.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:01",
+        "object": "car",
+        "coordinates": [
+            845.0,
+            314.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:01",
+        "object": "car",
+        "coordinates": [
+            518.5,
+            305.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:01",
+        "object": "car",
+        "coordinates": [
+            136.5,
+            315.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:02",
+        "object": "car",
+        "coordinates": [
+            847.5,
+            313.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:02",
+        "object": "car",
+        "coordinates": [
+            519.5,
+            305.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:02",
+        "object": "car",
+        "coordinates": [
+            156.5,
+            315.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:02",
+        "object": "car",
+        "coordinates": [
+            20.5,
+            312.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:03",
+        "object": "car",
+        "coordinates": [
+            851.0,
+            314.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:03",
+        "object": "car",
+        "coordinates": [
+            522.0,
+            305.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:03",
+        "object": "car",
+        "coordinates": [
+            160.5,
+            314.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:03",
+        "object": "bus",
+        "coordinates": [
+            116.0,
+            215.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:04",
+        "object": "car",
+        "coordinates": [
+            853.0,
+            314.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:04",
+        "object": "car",
+        "coordinates": [
+            525.0,
+            306.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:04",
+        "object": "car",
+        "coordinates": [
+            170.0,
+            316.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:04",
+        "object": "car",
+        "coordinates": [
+            25.5,
+            315.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:04",
+        "object": "truck",
+        "coordinates": [
+            117.5,
+            216.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:06",
+        "object": "car",
+        "coordinates": [
+            859.0,
+            314.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:06",
+        "object": "car",
+        "coordinates": [
+            528.0,
+            305.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:06",
+        "object": "car",
+        "coordinates": [
+            165.0,
+            315.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:06",
+        "object": "car",
+        "coordinates": [
+            21.5,
+            315.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:06",
+        "object": "bus",
+        "coordinates": [
+            113.0,
+            218.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:06",
+        "object": "truck",
+        "coordinates": [
+            115.0,
+            219.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:08",
+        "object": "car",
+        "coordinates": [
+            861.0,
+            315.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:08",
+        "object": "car",
+        "coordinates": [
+            526.5,
+            306.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:08",
+        "object": "car",
+        "coordinates": [
+            169.0,
+            315.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:08",
+        "object": "car",
+        "coordinates": [
+            19.0,
+            314.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:08",
+        "object": "bus",
+        "coordinates": [
+            111.5,
+            220.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:08",
+        "object": "truck",
+        "coordinates": [
+            113.5,
+            219.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:09",
+        "object": "car",
+        "coordinates": [
+            864.5,
+            313.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:09",
+        "object": "car",
+        "coordinates": [
+            527.5,
+            305.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:09",
+        "object": "car",
+        "coordinates": [
+            166.5,
+            314.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:09",
+        "object": "car",
+        "coordinates": [
+            18.5,
+            317.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:09",
+        "object": "car",
+        "coordinates": [
+            868.0,
+            315.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:09",
+        "object": "car",
+        "coordinates": [
+            526.0,
+            307.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:09",
+        "object": "car",
+        "coordinates": [
+            171.0,
+            315.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:09",
+        "object": "car",
+        "coordinates": [
+            17.5,
+            315.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:09",
+        "object": "car",
+        "coordinates": [
+            872.0,
+            316.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:09",
+        "object": "car",
+        "coordinates": [
+            530.5,
+            307.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:09",
+        "object": "car",
+        "coordinates": [
+            16.5,
+            312.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:09",
+        "object": "car",
+        "coordinates": [
+            172.0,
+            314.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:10",
+        "object": "car",
+        "coordinates": [
+            875.0,
+            316.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:10",
+        "object": "car",
+        "coordinates": [
+            534.0,
+            307.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:10",
+        "object": "car",
+        "coordinates": [
+            16.0,
+            313.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:10",
+        "object": "car",
+        "coordinates": [
+            180.0,
+            314.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:10",
+        "object": "car",
+        "coordinates": [
+            879.0,
+            317.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:10",
+        "object": "car",
+        "coordinates": [
+            535.5,
+            307.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:10",
+        "object": "car",
+        "coordinates": [
+            15.5,
+            316.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:10",
+        "object": "car",
+        "coordinates": [
+            176.0,
+            315.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:10",
+        "object": "car",
+        "coordinates": [
+            884.0,
+            316.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:10",
+        "object": "car",
+        "coordinates": [
+            537.0,
+            306.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:10",
+        "object": "car",
+        "coordinates": [
+            191.5,
+            320.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:10",
+        "object": "car",
+        "coordinates": [
+            14.0,
+            315.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:10",
+        "object": "car",
+        "coordinates": [
+            886.5,
+            317.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:10",
+        "object": "car",
+        "coordinates": [
+            538.5,
+            307.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:10",
+        "object": "car",
+        "coordinates": [
+            189.5,
+            311.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:10",
+        "object": "car",
+        "coordinates": [
+            13.5,
+            315.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:10",
+        "object": "car",
+        "coordinates": [
+            904.5,
+            319.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:10",
+        "object": "car",
+        "coordinates": [
+            552.5,
+            306.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:10",
+        "object": "car",
+        "coordinates": [
+            210.5,
+            313.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:10",
+        "object": "car",
+        "coordinates": [
+            9.0,
+            317.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:10",
+        "object": "car",
+        "coordinates": [
+            908.5,
+            319.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:10",
+        "object": "car",
+        "coordinates": [
+            553.5,
+            307.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:10",
+        "object": "car",
+        "coordinates": [
+            214.5,
+            313.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:10",
+        "object": "car",
+        "coordinates": [
+            8.0,
+            317.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:15",
+        "object": "car",
+        "coordinates": [
+            914.5,
+            319.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:15",
+        "object": "car",
+        "coordinates": [
+            557.0,
+            306.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:15",
+        "object": "car",
+        "coordinates": [
+            220.5,
+            309.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:15",
+        "object": "car",
+        "coordinates": [
+            919.0,
+            319.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:15",
+        "object": "car",
+        "coordinates": [
+            559.0,
+            306.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:15",
+        "object": "car",
+        "coordinates": [
+            227.0,
+            310.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:16",
+        "object": "car",
+        "coordinates": [
+            924.0,
+            320.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:16",
+        "object": "car",
+        "coordinates": [
+            561.5,
+            306.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:16",
+        "object": "car",
+        "coordinates": [
+            230.0,
+            311.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:17",
+        "object": "car",
+        "coordinates": [
+            927.0,
+            321.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:17",
+        "object": "car",
+        "coordinates": [
+            560.5,
+            305.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:17",
+        "object": "car",
+        "coordinates": [
+            233.0,
+            313.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:17",
+        "object": "car",
+        "coordinates": [
+            931.0,
+            320.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:17",
+        "object": "car",
+        "coordinates": [
+            562.5,
+            306.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:17",
+        "object": "car",
+        "coordinates": [
+            245.0,
+            322.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:17",
+        "object": "car",
+        "coordinates": [
+            933.5,
+            321.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:17",
+        "object": "car",
+        "coordinates": [
+            563.0,
+            305.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:17",
+        "object": "car",
+        "coordinates": [
+            240.0,
+            323.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:17",
+        "object": "car",
+        "coordinates": [
+            936.0,
+            322.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:17",
+        "object": "car",
+        "coordinates": [
+            564.5,
+            305.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:17",
+        "object": "car",
+        "coordinates": [
+            237.0,
+            322.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:17",
+        "object": "car",
+        "coordinates": [
+            937.5,
+            323.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:17",
+        "object": "car",
+        "coordinates": [
+            565.5,
+            305.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:17",
+        "object": "car",
+        "coordinates": [
+            243.0,
+            315.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:17",
+        "object": "car",
+        "coordinates": [
+            236.0,
+            324.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:18",
+        "object": "car",
+        "coordinates": [
+            938.5,
+            323.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:18",
+        "object": "car",
+        "coordinates": [
+            569.0,
+            305.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:18",
+        "object": "car",
+        "coordinates": [
+            198.5,
+            320.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:18",
+        "object": "car",
+        "coordinates": [
+            252.0,
+            315.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:18",
+        "object": "car",
+        "coordinates": [
+            940.0,
+            322.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:18",
+        "object": "car",
+        "coordinates": [
+            569.0,
+            305.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:18",
+        "object": "car",
+        "coordinates": [
+            200.5,
+            317.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:18",
+        "object": "traffic light",
+        "coordinates": [
+            207.5,
+            203.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:18",
+        "object": "car",
+        "coordinates": [
+            942.0,
+            322.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:18",
+        "object": "car",
+        "coordinates": [
+            572.0,
+            305.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:18",
+        "object": "car",
+        "coordinates": [
+            257.0,
+            311.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:18",
+        "object": "traffic light",
+        "coordinates": [
+            205.5,
+            203.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:18",
+        "object": "car",
+        "coordinates": [
+            943.5,
+            322.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:18",
+        "object": "car",
+        "coordinates": [
+            575.5,
+            305.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:18",
+        "object": "traffic light",
+        "coordinates": [
+            204.5,
+            203.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:18",
+        "object": "car",
+        "coordinates": [
+            264.5,
+            314.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:18",
+        "object": "car",
+        "coordinates": [
+            946.0,
+            322.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:18",
+        "object": "car",
+        "coordinates": [
+            577.0,
+            306.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:18",
+        "object": "car",
+        "coordinates": [
+            947.5,
+            323.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:18",
+        "object": "car",
+        "coordinates": [
+            579.5,
+            305.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:19",
+        "object": "car",
+        "coordinates": [
+            949.5,
+            323.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:19",
+        "object": "car",
+        "coordinates": [
+            581.5,
+            305.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:19",
+        "object": "car",
+        "coordinates": [
+            272.5,
+            311.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:19",
+        "object": "person",
+        "coordinates": [
+            814.0,
+            287.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:19",
+        "object": "car",
+        "coordinates": [
+            951.0,
+            321.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:19",
+        "object": "car",
+        "coordinates": [
+            584.0,
+            306.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:19",
+        "object": "car",
+        "coordinates": [
+            953.0,
+            322.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:19",
+        "object": "car",
+        "coordinates": [
+            583.5,
+            306.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:19",
+        "object": "car",
+        "coordinates": [
+            278.5,
+            311.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:19",
+        "object": "person",
+        "coordinates": [
+            814.0,
+            290.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:19",
+        "object": "car",
+        "coordinates": [
+            955.5,
+            322.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:19",
+        "object": "car",
+        "coordinates": [
+            588.5,
+            305.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:19",
+        "object": "car",
+        "coordinates": [
+            286.0,
+            310.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:19",
+        "object": "person",
+        "coordinates": [
+            815.5,
+            288.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:19",
+        "object": "person",
+        "coordinates": [
+            833.0,
+            292.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:19",
+        "object": "car",
+        "coordinates": [
+            956.0,
+            323.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:19",
+        "object": "car",
+        "coordinates": [
+            589.5,
+            306.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:19",
+        "object": "car",
+        "coordinates": [
+            288.0,
+            309.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:19",
+        "object": "person",
+        "coordinates": [
+            815.5,
+            289.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:19",
+        "object": "person",
+        "coordinates": [
+            833.0,
+            292.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:19",
+        "object": "car",
+        "coordinates": [
+            958.5,
+            322.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:19",
+        "object": "car",
+        "coordinates": [
+            593.5,
+            305.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:19",
+        "object": "car",
+        "coordinates": [
+            292.5,
+            310.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:19",
+        "object": "person",
+        "coordinates": [
+            815.0,
+            288.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:19",
+        "object": "person",
+        "coordinates": [
+            834.0,
+            293.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:20",
+        "object": "car",
+        "coordinates": [
+            597.0,
+            306.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:20",
+        "object": "car",
+        "coordinates": [
+            960.5,
+            322.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:20",
+        "object": "car",
+        "coordinates": [
+            297.5,
+            309.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:20",
+        "object": "person",
+        "coordinates": [
+            815.5,
+            288.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:20",
+        "object": "person",
+        "coordinates": [
+            834.5,
+            293.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:20",
+        "object": "car",
+        "coordinates": [
+            962.0,
+            322.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:20",
+        "object": "car",
+        "coordinates": [
+            598.5,
+            306.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:20",
+        "object": "car",
+        "coordinates": [
+            301.0,
+            310.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:20",
+        "object": "person",
+        "coordinates": [
+            815.0,
+            288.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:20",
+        "object": "person",
+        "coordinates": [
+            834.5,
+            293.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:20",
+        "object": "car",
+        "coordinates": [
+            250.5,
+            319.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:20",
+        "object": "person",
+        "coordinates": [
+            682.5,
+            331.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:20",
+        "object": "car",
+        "coordinates": [
+            964.0,
+            324.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:20",
+        "object": "car",
+        "coordinates": [
+            598.0,
+            306.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:20",
+        "object": "car",
+        "coordinates": [
+            306.5,
+            314.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:20",
+        "object": "person",
+        "coordinates": [
+            815.0,
+            288.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:20",
+        "object": "person",
+        "coordinates": [
+            682.0,
+            330.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:20",
+        "object": "person",
+        "coordinates": [
+            834.5,
+            293.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:20",
+        "object": "car",
+        "coordinates": [
+            966.0,
+            323.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:20",
+        "object": "car",
+        "coordinates": [
+            602.5,
+            306.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:20",
+        "object": "car",
+        "coordinates": [
+            311.5,
+            310.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:20",
+        "object": "person",
+        "coordinates": [
+            815.0,
+            288.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:20",
+        "object": "bus",
+        "coordinates": [
+            54.0,
+            292.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:20",
+        "object": "person",
+        "coordinates": [
+            835.0,
+            293.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:20",
+        "object": "person",
+        "coordinates": [
+            859.0,
+            295.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:20",
+        "object": "car",
+        "coordinates": [
+            969.0,
+            323.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:20",
+        "object": "car",
+        "coordinates": [
+            605.0,
+            307.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:20",
+        "object": "car",
+        "coordinates": [
+            315.5,
+            310.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:20",
+        "object": "person",
+        "coordinates": [
+            815.0,
+            288.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:20",
+        "object": "person",
+        "coordinates": [
+            858.5,
+            294.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:20",
+        "object": "bus",
+        "coordinates": [
+            54.5,
+            291.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:20",
+        "object": "person",
+        "coordinates": [
+            834.5,
+            294.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:21",
+        "object": "car",
+        "coordinates": [
+            972.0,
+            321.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:21",
+        "object": "car",
+        "coordinates": [
+            608.0,
+            306.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:21",
+        "object": "car",
+        "coordinates": [
+            319.5,
+            309.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:21",
+        "object": "person",
+        "coordinates": [
+            858.5,
+            296.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:21",
+        "object": "person",
+        "coordinates": [
+            815.0,
+            288.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:21",
+        "object": "bus",
+        "coordinates": [
+            54.5,
+            291.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:21",
+        "object": "car",
+        "coordinates": [
+            974.5,
+            321.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:21",
+        "object": "car",
+        "coordinates": [
+            612.5,
+            307.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:21",
+        "object": "car",
+        "coordinates": [
+            323.5,
+            309.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:21",
+        "object": "bus",
+        "coordinates": [
+            54.5,
+            290.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:21",
+        "object": "person",
+        "coordinates": [
+            858.5,
+            296.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:21",
+        "object": "person",
+        "coordinates": [
+            815.0,
+            288.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:21",
+        "object": "car",
+        "coordinates": [
+            976.0,
+            321.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:21",
+        "object": "car",
+        "coordinates": [
+            616.5,
+            306.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:21",
+        "object": "bus",
+        "coordinates": [
+            54.5,
+            290.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:21",
+        "object": "person",
+        "coordinates": [
+            858.5,
+            296.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:21",
+        "object": "person",
+        "coordinates": [
+            815.0,
+            288.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:21",
+        "object": "car",
+        "coordinates": [
+            979.0,
+            320.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:21",
+        "object": "car",
+        "coordinates": [
+            617.5,
+            309.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:21",
+        "object": "bus",
+        "coordinates": [
+            54.5,
+            288.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:21",
+        "object": "person",
+        "coordinates": [
+            814.5,
+            288.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:21",
+        "object": "person",
+        "coordinates": [
+            858.5,
+            295.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:21",
+        "object": "car",
+        "coordinates": [
+            982.5,
+            320.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:21",
+        "object": "car",
+        "coordinates": [
+            621.5,
+            310.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:21",
+        "object": "bus",
+        "coordinates": [
+            54.5,
+            290.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:21",
+        "object": "person",
+        "coordinates": [
+            252.0,
+            313.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:21",
+        "object": "bus",
+        "coordinates": [
+            986.5,
+            280.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:21",
+        "object": "person",
+        "coordinates": [
+            248.5,
+            315.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:21",
+        "object": "person",
+        "coordinates": [
+            232.5,
+            314.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:21",
+        "object": "person",
+        "coordinates": [
+            814.5,
+            289.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:21",
+        "object": "car",
+        "coordinates": [
+            335.5,
+            309.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:21",
+        "object": "person",
+        "coordinates": [
+            228.0,
+            315.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:21",
+        "object": "person",
+        "coordinates": [
+            858.5,
+            295.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:22",
+        "object": "car",
+        "coordinates": [
+            985.0,
+            320.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:22",
+        "object": "car",
+        "coordinates": [
+            622.5,
+            306.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:22",
+        "object": "person",
+        "coordinates": [
+            814.0,
+            289.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:22",
+        "object": "person",
+        "coordinates": [
+            858.5,
+            295.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:22",
+        "object": "bus",
+        "coordinates": [
+            54.0,
+            292.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:22",
+        "object": "person",
+        "coordinates": [
+            253.5,
+            315.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:22",
+        "object": "bus",
+        "coordinates": [
+            989.5,
+            239.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:22",
+        "object": "car",
+        "coordinates": [
+            988.0,
+            321.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:22",
+        "object": "car",
+        "coordinates": [
+            626.5,
+            305.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:22",
+        "object": "bus",
+        "coordinates": [
+            54.0,
+            291.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:22",
+        "object": "car",
+        "coordinates": [
+            345.5,
+            309.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:22",
+        "object": "person",
+        "coordinates": [
+            857.5,
+            295.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:22",
+        "object": "person",
+        "coordinates": [
+            813.5,
+            290.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:22",
+        "object": "person",
+        "coordinates": [
+            678.0,
+            351.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:22",
+        "object": "bus",
+        "coordinates": [
+            990.0,
+            237.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:22",
+        "object": "car",
+        "coordinates": [
+            989.0,
+            321.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:22",
+        "object": "car",
+        "coordinates": [
+            628.0,
+            306.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:22",
+        "object": "person",
+        "coordinates": [
+            678.5,
+            351.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:22",
+        "object": "bus",
+        "coordinates": [
+            54.5,
+            292.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:22",
+        "object": "car",
+        "coordinates": [
+            347.5,
+            308.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:22",
+        "object": "person",
+        "coordinates": [
+            858.0,
+            295.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:22",
+        "object": "car",
+        "coordinates": [
+            632.0,
+            306.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:22",
+        "object": "car",
+        "coordinates": [
+            994.5,
+            322.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:22",
+        "object": "car",
+        "coordinates": [
+            632.0,
+            324.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:22",
+        "object": "person",
+        "coordinates": [
+            685.5,
+            355.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:22",
+        "object": "bus",
+        "coordinates": [
+            54.5,
+            292.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:22",
+        "object": "person",
+        "coordinates": [
+            857.5,
+            295.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:22",
+        "object": "bus",
+        "coordinates": [
+            991.5,
+            239.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:22",
+        "object": "car",
+        "coordinates": [
+            998.0,
+            321.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:22",
+        "object": "car",
+        "coordinates": [
+            635.5,
+            306.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:22",
+        "object": "car",
+        "coordinates": [
+            359.0,
+            303.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:22",
+        "object": "bus",
+        "coordinates": [
+            991.5,
+            243.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:22",
+        "object": "bus",
+        "coordinates": [
+            54.5,
+            292.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:22",
+        "object": "person",
+        "coordinates": [
+            858.0,
+            294.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:23",
+        "object": "car",
+        "coordinates": [
+            1001.5,
+            321.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:23",
+        "object": "car",
+        "coordinates": [
+            640.0,
+            309.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:23",
+        "object": "car",
+        "coordinates": [
+            362.5,
+            306.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:23",
+        "object": "person",
+        "coordinates": [
+            858.5,
+            294.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:23",
+        "object": "car",
+        "coordinates": [
+            1004.5,
+            321.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:23",
+        "object": "car",
+        "coordinates": [
+            642.5,
+            305.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:23",
+        "object": "car",
+        "coordinates": [
+            366.5,
+            306.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:23",
+        "object": "person",
+        "coordinates": [
+            858.0,
+            294.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:23",
+        "object": "car",
+        "coordinates": [
+            1006.5,
+            321.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:23",
+        "object": "car",
+        "coordinates": [
+            644.5,
+            305.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:23",
+        "object": "car",
+        "coordinates": [
+            369.0,
+            306.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:23",
+        "object": "person",
+        "coordinates": [
+            858.0,
+            294.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:23",
+        "object": "car",
+        "coordinates": [
+            1011.0,
+            320.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:23",
+        "object": "car",
+        "coordinates": [
+            649.5,
+            305.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:23",
+        "object": "car",
+        "coordinates": [
+            374.0,
+            305.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:23",
+        "object": "person",
+        "coordinates": [
+            858.0,
+            294.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:23",
+        "object": "person",
+        "coordinates": [
+            833.0,
+            295.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:23",
+        "object": "car",
+        "coordinates": [
+            650.0,
+            323.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:23",
+        "object": "car",
+        "coordinates": [
+            1014.0,
+            321.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:23",
+        "object": "car",
+        "coordinates": [
+            653.5,
+            305.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:23",
+        "object": "person",
+        "coordinates": [
+            833.0,
+            295.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:23",
+        "object": "car",
+        "coordinates": [
+            331.0,
+            318.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:23",
+        "object": "person",
+        "coordinates": [
+            858.0,
+            294.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:24",
+        "object": "car",
+        "coordinates": [
+            1017.5,
+            322.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:24",
+        "object": "car",
+        "coordinates": [
+            656.0,
+            306.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:24",
+        "object": "car",
+        "coordinates": [
+            384.5,
+            306.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:24",
+        "object": "person",
+        "coordinates": [
+            833.0,
+            295.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:24",
+        "object": "person",
+        "coordinates": [
+            858.0,
+            294.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:24",
+        "object": "person",
+        "coordinates": [
+            813.5,
+            288.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:25",
+        "object": "car",
+        "coordinates": [
+            1022.0,
+            321.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:25",
+        "object": "car",
+        "coordinates": [
+            387.5,
+            306.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:25",
+        "object": "car",
+        "coordinates": [
+            659.5,
+            306.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:25",
+        "object": "person",
+        "coordinates": [
+            833.0,
+            295.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:25",
+        "object": "person",
+        "coordinates": [
+            858.0,
+            294.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:25",
+        "object": "car",
+        "coordinates": [
+            1024.5,
+            321.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:25",
+        "object": "car",
+        "coordinates": [
+            390.5,
+            306.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:25",
+        "object": "car",
+        "coordinates": [
+            661.0,
+            307.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:25",
+        "object": "car",
+        "coordinates": [
+            661.0,
+            321.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:25",
+        "object": "person",
+        "coordinates": [
+            833.0,
+            295.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:25",
+        "object": "person",
+        "coordinates": [
+            858.0,
+            294.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:25",
+        "object": "car",
+        "coordinates": [
+            1028.5,
+            324.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:25",
+        "object": "car",
+        "coordinates": [
+            664.0,
+            317.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:25",
+        "object": "car",
+        "coordinates": [
+            395.0,
+            306.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:25",
+        "object": "person",
+        "coordinates": [
+            833.0,
+            294.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:26",
+        "object": "car",
+        "coordinates": [
+            669.5,
+            309.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:26",
+        "object": "car",
+        "coordinates": [
+            1032.0,
+            319.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:26",
+        "object": "car",
+        "coordinates": [
+            394.0,
+            307.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:26",
+        "object": "person",
+        "coordinates": [
+            833.0,
+            295.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:31",
+        "object": "car",
+        "coordinates": [
+            673.0,
+            307.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:31",
+        "object": "car",
+        "coordinates": [
+            1037.0,
+            324.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:32",
+        "object": "car",
+        "coordinates": [
+            675.5,
+            306.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:32",
+        "object": "car",
+        "coordinates": [
+            407.0,
+            306.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:32",
+        "object": "car",
+        "coordinates": [
+            1041.5,
+            330.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:32",
+        "object": "bus",
+        "coordinates": [
+            140.0,
+            228.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:32",
+        "object": "person",
+        "coordinates": [
+            814.0,
+            288.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:32",
+        "object": "car",
+        "coordinates": [
+            678.0,
+            307.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:32",
+        "object": "car",
+        "coordinates": [
+            1044.0,
+            331.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:32",
+        "object": "car",
+        "coordinates": [
+            409.5,
+            305.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:32",
+        "object": "person",
+        "coordinates": [
+            19.5,
+            462.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:32",
+        "object": "bus",
+        "coordinates": [
+            139.5,
+            227.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:32",
+        "object": "car",
+        "coordinates": [
+            681.0,
+            307.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:32",
+        "object": "car",
+        "coordinates": [
+            1048.5,
+            330.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:32",
+        "object": "car",
+        "coordinates": [
+            414.0,
+            306.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:32",
+        "object": "person",
+        "coordinates": [
+            21.0,
+            465.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:32",
+        "object": "person",
+        "coordinates": [
+            833.5,
+            295.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:32",
+        "object": "car",
+        "coordinates": [
+            418.5,
+            306.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:32",
+        "object": "car",
+        "coordinates": [
+            686.0,
+            307.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:32",
+        "object": "car",
+        "coordinates": [
+            1054.0,
+            331.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:32",
+        "object": "person",
+        "coordinates": [
+            21.5,
+            517.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:32",
+        "object": "person",
+        "coordinates": [
+            23.5,
+            464.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:32",
+        "object": "car",
+        "coordinates": [
+            423.0,
+            306.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:32",
+        "object": "car",
+        "coordinates": [
+            689.5,
+            307.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:32",
+        "object": "person",
+        "coordinates": [
+            24.5,
+            458.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:32",
+        "object": "person",
+        "coordinates": [
+            22.5,
+            512.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:33",
+        "object": "car",
+        "coordinates": [
+            424.0,
+            306.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:33",
+        "object": "car",
+        "coordinates": [
+            692.0,
+            309.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:33",
+        "object": "person",
+        "coordinates": [
+            26.0,
+            463.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:33",
+        "object": "person",
+        "coordinates": [
+            24.0,
+            513.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:33",
+        "object": "car",
+        "coordinates": [
+            694.0,
+            308.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:33",
+        "object": "car",
+        "coordinates": [
+            425.5,
+            306.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:33",
+        "object": "person",
+        "coordinates": [
+            24.0,
+            514.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:33",
+        "object": "person",
+        "coordinates": [
+            26.5,
+            462.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:33",
+        "object": "car",
+        "coordinates": [
+            432.0,
+            306.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:33",
+        "object": "car",
+        "coordinates": [
+            697.5,
+            308.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:33",
+        "object": "person",
+        "coordinates": [
+            27.0,
+            465.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:33",
+        "object": "person",
+        "coordinates": [
+            24.0,
+            515.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:33",
+        "object": "car",
+        "coordinates": [
+            694.5,
+            325.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:33",
+        "object": "car",
+        "coordinates": [
+            699.0,
+            308.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:33",
+        "object": "car",
+        "coordinates": [
+            437.0,
+            308.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:33",
+        "object": "person",
+        "coordinates": [
+            26.5,
+            456.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:33",
+        "object": "car",
+        "coordinates": [
+            699.0,
+            307.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:33",
+        "object": "person",
+        "coordinates": [
+            26.0,
+            456.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:33",
+        "object": "car",
+        "coordinates": [
+            458.5,
+            313.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:33",
+        "object": "person",
+        "coordinates": [
+            23.5,
+            497.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:33",
+        "object": "car",
+        "coordinates": [
+            442.5,
+            311.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:34",
+        "object": "car",
+        "coordinates": [
+            706.5,
+            306.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:34",
+        "object": "car",
+        "coordinates": [
+            447.0,
+            314.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:34",
+        "object": "person",
+        "coordinates": [
+            21.5,
+            517.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:34",
+        "object": "person",
+        "coordinates": [
+            25.5,
+            459.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:34",
+        "object": "car",
+        "coordinates": [
+            709.5,
+            307.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:34",
+        "object": "person",
+        "coordinates": [
+            20.5,
+            458.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:34",
+        "object": "car",
+        "coordinates": [
+            449.5,
+            308.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:34",
+        "object": "car",
+        "coordinates": [
+            710.5,
+            310.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:34",
+        "object": "person",
+        "coordinates": [
+            20.0,
+            456.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:34",
+        "object": "car",
+        "coordinates": [
+            471.5,
+            313.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:34",
+        "object": "car",
+        "coordinates": [
+            715.0,
+            310.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:34",
+        "object": "car",
+        "coordinates": [
+            454.0,
+            305.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:34",
+        "object": "person",
+        "coordinates": [
+            18.0,
+            456.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:34",
+        "object": "car",
+        "coordinates": [
+            718.5,
+            307.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:34",
+        "object": "car",
+        "coordinates": [
+            458.0,
+            306.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:34",
+        "object": "umbrella",
+        "coordinates": [
+            118.0,
+            205.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:34",
+        "object": "person",
+        "coordinates": [
+            16.0,
+            453.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:34",
+        "object": "person",
+        "coordinates": [
+            815.0,
+            288.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:34",
+        "object": "car",
+        "coordinates": [
+            723.0,
+            306.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:34",
+        "object": "car",
+        "coordinates": [
+            462.5,
+            305.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:34",
+        "object": "umbrella",
+        "coordinates": [
+            116.0,
+            204.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:34",
+        "object": "person",
+        "coordinates": [
+            815.0,
+            289.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:35",
+        "object": "car",
+        "coordinates": [
+            726.5,
+            308.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:35",
+        "object": "car",
+        "coordinates": [
+            467.5,
+            308.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:35",
+        "object": "person",
+        "coordinates": [
+            815.0,
+            289.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:35",
+        "object": "car",
+        "coordinates": [
+            730.5,
+            308.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:35",
+        "object": "car",
+        "coordinates": [
+            472.5,
+            305.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:36",
+        "object": "car",
+        "coordinates": [
+            736.5,
+            308.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:36",
+        "object": "car",
+        "coordinates": [
+            475.0,
+            305.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:36",
+        "object": "car",
+        "coordinates": [
+            740.0,
+            307.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:36",
+        "object": "car",
+        "coordinates": [
+            480.0,
+            304.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:36",
+        "object": "car",
+        "coordinates": [
+            742.0,
+            307.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:36",
+        "object": "car",
+        "coordinates": [
+            485.0,
+            305.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:36",
+        "object": "car",
+        "coordinates": [
+            288.0,
+            270.0
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:36",
+        "object": "car",
+        "coordinates": [
+            747.0,
+            308.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:36",
+        "object": "car",
+        "coordinates": [
+            488.5,
+            306.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:36",
+        "object": "umbrella",
+        "coordinates": [
+            107.0,
+            214.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:36",
+        "object": "car",
+        "coordinates": [
+            472.0,
+            304.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:37",
+        "object": "car",
+        "coordinates": [
+            746.0,
+            307.5
+        ]
+    },
+    {
+        "time": "2025-06-16 03:24:37",
+        "object": "car",
+        "coordinates": [
+            484.0,
+            308.0
+        ]
+    }
+]

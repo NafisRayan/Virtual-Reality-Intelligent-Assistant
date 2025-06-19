@@ -162,117 +162,116 @@ export class VoiceChatSystem {
         }
     }
 
-
-async fetchDetectedObjects() {
-    try {
-        console.log('Fetching detected objects...');
-        
-        // Add timeout to prevent hanging requests
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
-        
-        // Try to fetch the JSON endpoint first (which converts txt to JSON)
-        const response = await fetch('/detected_objects.json', {
-            signal: controller.signal,
-            cache: 'no-cache',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        });
-        
-        clearTimeout(timeoutId);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
-        }
-        
-        // Get the response text first to debug
-        const responseText = await response.text();
-        console.log('Response length:', responseText.length);
-        console.log('Response preview (first 200 chars):', responseText.substring(0, 200));
-        
-        // Check if response is empty
-        if (!responseText || responseText.trim() === '') {
-            console.log('Empty response received');
-            return 'No detected objects found - file is empty.';
-        }
-        
-        // Try to parse the JSON
-        let data;
+    async fetchDetectedObjects() {
         try {
-            data = JSON.parse(responseText);
-        } catch (parseError) {
-            console.error('JSON parsing error:', parseError);
-            console.error('Response text that failed to parse:', responseText);
-            return 'Error: Invalid JSON format in detected objects response.';
-        }
-        
-        // Validate that we have an array with data
-        if (!Array.isArray(data)) {
-            console.error('Data is not an array:', typeof data, data);
-            return 'Error: Expected array format in detected objects response.';
-        }
-        
-        if (data.length === 0) {
-            return 'No detected objects found.';
-        }
-        
-        console.log(`Successfully parsed ${data.length} detected objects`);
-        
-        // Group objects by time to get latest detections
-        const recentObjects = this.getRecentDetections(data, 10); // Get last 10 unique objects
-        
-        // Format the detected objects into a readable string
-        const objectsList = recentObjects.map((item, index) => {
-            let coords = 'N/A';
-            if (item.coordinates && Array.isArray(item.coordinates) && item.coordinates.length >= 2) {
-                coords = `(${item.coordinates[0].toFixed(1)}, ${item.coordinates[1].toFixed(1)})`;
+            console.log('Fetching detected objects...');
+            
+            // Add timeout to prevent hanging requests
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+            
+            // Try to fetch the JSON endpoint first (which converts txt to JSON)
+            const response = await fetch('/detected_objects.json', {
+                signal: controller.signal,
+                cache: 'no-cache',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            clearTimeout(timeoutId);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
             }
             
-            return `${index + 1}. ${item.object || 'Unknown'} at ${coords} - ${item.time || 'Unknown time'}`;
-        }).join('; ');
-        
-        return `Found ${data.length} total detections. Recent objects: ${objectsList}`;
-        
-    } catch (error) {
-        console.error('Error fetching detected objects:', error);
-        
-        if (error.name === 'AbortError') {
-            return 'Error: Request timed out while fetching detected objects. Please try again.';
-        } else if (error.message.includes('Failed to fetch')) {
-            return 'Error: Network error while fetching detected objects. Please check your connection.';
-        } else {
-            return `Error fetching detected objects: ${error.message}. Please try again.`;
+            // Get the response text first to debug
+            const responseText = await response.text();
+            console.log('Response length:', responseText.length);
+            console.log('Response preview (first 200 chars):', responseText.substring(0, 200));
+            
+            // Check if response is empty
+            if (!responseText || responseText.trim() === '') {
+                console.log('Empty response received');
+                return 'No detected objects found - file is empty.';
+            }
+            
+            // Try to parse the JSON
+            let data;
+            try {
+                data = JSON.parse(responseText);
+            } catch (parseError) {
+                console.error('JSON parsing error:', parseError);
+                console.error('Response text that failed to parse:', responseText);
+                return 'Error: Invalid JSON format in detected objects response.';
+            }
+            
+            // Validate that we have an array with data
+            if (!Array.isArray(data)) {
+                console.error('Data is not an array:', typeof data, data);
+                return 'Error: Expected array format in detected objects response.';
+            }
+            
+            if (data.length === 0) {
+                return 'No detected objects found.';
+            }
+            
+            console.log(`Successfully parsed ${data.length} detected objects`);
+            
+            // Group objects by time to get latest detections
+            const recentObjects = this.getRecentDetections(data, 10); // Get last 10 unique objects
+            
+            // Format the detected objects into a readable string
+            const objectsList = recentObjects.map((item, index) => {
+                let coords = 'N/A';
+                if (item.coordinates && Array.isArray(item.coordinates) && item.coordinates.length >= 2) {
+                    coords = `(${item.coordinates[0].toFixed(1)}, ${item.coordinates[1].toFixed(1)})`;
+                }
+                
+                return `${index + 1}. ${item.object || 'Unknown'} at ${coords} - ${item.time || 'Unknown time'}`;
+            }).join('; ');
+            
+            return `Found ${data.length} total detections. Recent objects: ${objectsList}`;
+            
+        } catch (error) {
+            console.error('Error fetching detected objects:', error);
+            
+            if (error.name === 'AbortError') {
+                return 'Error: Request timed out while fetching detected objects. Please try again.';
+            } else if (error.message.includes('Failed to fetch')) {
+                return 'Error: Network error while fetching detected objects. Please check your connection.';
+            } else {
+                return `Error fetching detected objects: ${error.message}. Please try again.`;
+            }
         }
     }
-}
 
-// Helper method to get recent unique detections
-getRecentDetections(data, maxCount = 10) {
-    // Sort by time (most recent first)
-    const sortedData = data.sort((a, b) => {
-        const timeA = new Date(a.time || 0);
-        const timeB = new Date(b.time || 0);
-        return timeB - timeA;
-    });
-    
-    // Get unique objects (latest occurrence of each object type)
-    const uniqueObjects = new Map();
-    
-    for (const item of sortedData) {
-        const key = item.object;
-        if (!uniqueObjects.has(key)) {
-            uniqueObjects.set(key, item);
+    // Helper method to get recent unique detections
+    getRecentDetections(data, maxCount = 10) {
+        // Sort by time (most recent first)
+        const sortedData = data.sort((a, b) => {
+            const timeA = new Date(a.time || 0);
+            const timeB = new Date(b.time || 0);
+            return timeB - timeA;
+        });
+        
+        // Get unique objects (latest occurrence of each object type)
+        const uniqueObjects = new Map();
+        
+        for (const item of sortedData) {
+            const key = item.object;
+            if (!uniqueObjects.has(key)) {
+                uniqueObjects.set(key, item);
+            }
+            
+            if (uniqueObjects.size >= maxCount) {
+                break;
+            }
         }
         
-        if (uniqueObjects.size >= maxCount) {
-            break;
-        }
+        return Array.from(uniqueObjects.values());
     }
-    
-    return Array.from(uniqueObjects.values());
-}
 
     async toggleDetectedObjectMode() {
         if (this.recognition) {
@@ -303,7 +302,7 @@ getRecentDetections(data, maxCount = 10) {
     createVoiceChatScreen() {
         const screenGroup = new THREE.Group();
 
-        const screenGeometry = new THREE.PlaneGeometry(2, 1.5);
+        const screenGeometry = new THREE.PlaneGeometry(2.6, 1.95);
         const screenMaterial = new THREE.MeshPhongMaterial({
             color: 0x000000,
             transparent: true,
@@ -312,7 +311,7 @@ getRecentDetections(data, maxCount = 10) {
         const screenMesh = new THREE.Mesh(screenGeometry, screenMaterial);
         screenGroup.add(screenMesh);
 
-        const borderGeometry = new THREE.PlaneGeometry(2.1, 1.6);
+        const borderGeometry = new THREE.PlaneGeometry(2.73, 2.08);
         const borderMaterial = new THREE.MeshPhongMaterial({
             color: 0x333333,
             transparent: true,
@@ -323,11 +322,11 @@ getRecentDetections(data, maxCount = 10) {
         screenGroup.add(borderMesh);
 
         // Voice toggle button (English)
-        const voiceButton = this.makeButtonMesh(0.3, 0.1, 0.02, 0xff4444);
-        const voiceButtonText = createText('🎤 Voice', 0.04);
-        voiceButtonText.position.set(0, 0, 0.011);
+        const voiceButton = this.makeButtonMesh(0.39, 0.13, 0.026, 0xff4444);
+        const voiceButtonText = createText('🎤 Voice', 0.052);
+        voiceButtonText.position.set(0, 0, 0.0143);
         voiceButton.add(voiceButtonText);
-        voiceButton.position.set(-0.75, -0.6, 0.02);
+        voiceButton.position.set(-0.975, -0.78, 0.026);
         voiceButton.userData = { 
             isButton: true, 
             action: () => this.toggleVoiceRecognition() 
@@ -335,11 +334,11 @@ getRecentDetections(data, maxCount = 10) {
         screenGroup.add(voiceButton);
 
         // Mic icon button for AI speech
-        const micButton = this.makeButtonMesh(0.3, 0.1, 0.02, 0x4444ff);
-        const micButtonText = createText('🔊 AI Speak', 0.04);
-        micButtonText.position.set(0, 0, 0.011);
+        const micButton = this.makeButtonMesh(0.39, 0.13, 0.026, 0x4444ff);
+        const micButtonText = createText('🔊 AI Speak', 0.052);
+        micButtonText.position.set(0, 0, 0.0143);
         micButton.add(micButtonText);
-        micButton.position.set(-0.25, -0.6, 0.02);
+        micButton.position.set(-0.325, -0.78, 0.026);
         micButton.userData = { 
             isButton: true, 
             action: () => this.toggleMic() 
@@ -347,11 +346,11 @@ getRecentDetections(data, maxCount = 10) {
         screenGroup.add(micButton);
 
         // Bangla voice button
-        const banglaButton = this.makeButtonMesh(0.3, 0.1, 0.02, 0x44ff44);
-        const banglaButtonText = createText('🎤 Bangla', 0.04);
-        banglaButtonText.position.set(0, 0, 0.011);
+        const banglaButton = this.makeButtonMesh(0.39, 0.13, 0.026, 0x44ff44);
+        const banglaButtonText = createText('🎤 Bangla', 0.052);
+        banglaButtonText.position.set(0, 0, 0.0143);
         banglaButton.add(banglaButtonText);
-        banglaButton.position.set(0.25, -0.6, 0.02);
+        banglaButton.position.set(0.325, -0.78, 0.026);
         banglaButton.userData = { 
             isButton: true, 
             action: () => this.toggleBanglaVoiceRecognition() 
@@ -359,11 +358,11 @@ getRecentDetections(data, maxCount = 10) {
         screenGroup.add(banglaButton);
 
         // Detected Object button
-        const detectedObjectButton = this.makeButtonMesh(0.3, 0.1, 0.02, 0xffff44);
-        const detectedObjectButtonText = createText('🔍 Vision', 0.04);
-        detectedObjectButtonText.position.set(0, 0, 0.011);
+        const detectedObjectButton = this.makeButtonMesh(0.39, 0.13, 0.026, 0xffff44);
+        const detectedObjectButtonText = createText('🔍 Vision', 0.052);
+        detectedObjectButtonText.position.set(0, 0, 0.0143);
         detectedObjectButton.add(detectedObjectButtonText);
-        detectedObjectButton.position.set(0.75, -0.6, 0.02);
+        detectedObjectButton.position.set(0.975, -0.78, 0.026);
         detectedObjectButton.userData = { 
             isButton: true, 
             action: () => this.toggleDetectedObjectMode()
@@ -637,8 +636,8 @@ getRecentDetections(data, maxCount = 10) {
         existingMessages.forEach(msg => this.voiceChatScreen.remove(msg));
 
         const recentMessages = this.chatMessages.slice(-6);
-        const startY = 0.5;
-        const messageHeight = 0.15;
+        const startY = 0.65;
+        const messageHeight = 0.195;
 
         recentMessages.forEach((messageData, index) => {
             const yPosition = startY - (index * messageHeight);
@@ -651,8 +650,8 @@ getRecentDetections(data, maxCount = 10) {
         const messageGroup = new THREE.Group();
         messageGroup.userData.isMessage = true;
 
-        const bgWidth = 1.8;
-        const bgHeight = 0.12;
+        const bgWidth = 2.34;
+        const bgHeight = 0.156;
         const bgGeometry = new THREE.PlaneGeometry(bgWidth, bgHeight);
         const bgColor = messageData.isUser ? 0x0066cc : (messageData.isLoading ? 0x666666 : 0x333333);
         const bgMaterial = new THREE.MeshPhongMaterial({
@@ -661,14 +660,14 @@ getRecentDetections(data, maxCount = 10) {
             opacity: 0.7
         });
         const bgMesh = new THREE.Mesh(bgGeometry, bgMaterial);
-        bgMesh.position.set(messageData.isUser ? 0.1 : -0.1, yPosition, 0.01);
+        bgMesh.position.set(messageData.isUser ? 0.13 : -0.13, yPosition, 0.01);
         messageGroup.add(bgMesh);
 
         const maxLength = 50;
         const displayText = messageData.text.length > maxLength ? messageData.text.substring(0, maxLength) + '...' : messageData.text;
 
-        const messageText = createText(displayText, 0.03);
-        messageText.position.set(messageData.isUser ? 0.1 : -0.1, yPosition, 0.02);
+        const messageText = createText(displayText, 0.039);
+        messageText.position.set(messageData.isUser ? 0.13 : -0.13, yPosition, 0.02);
         messageText.material.color.setHex(0xffffff);
         messageGroup.add(messageText);
 

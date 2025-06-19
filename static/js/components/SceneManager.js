@@ -129,7 +129,7 @@ export class SceneManager {
             shininess: 30,
             side: THREE.DoubleSide,
             transparent: true,
-            opacity: 0.9
+            opacity: 1
         });
 
         this.roof = new THREE.Mesh(roofGeometry, roofMaterial);

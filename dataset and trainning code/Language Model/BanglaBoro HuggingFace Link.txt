@@ -1,0 +1,12 @@
+Link: https://huggingface.co/datasets/SrejonAhamed/BanglaBoro
+
+The dataset is a collection of Bangla text data, including sentences, paragraphs, and documents, sourced from various domains such as news, literature, and social media. It is designed for natural language processing tasks like text classification, sentiment analysis, and machine translation. The dataset is preprocessed to ensure consistency and quality, making it suitable for training and evaluating NLP models.
+
+To load the dataset, you can use the following code snippet:
+
+```
+from datasets import load_dataset
+
+# Login using e.g. `huggingface-cli login` to access this dataset
+ds = load_dataset("SrejonAhamed/BanglaBoro")
+```
